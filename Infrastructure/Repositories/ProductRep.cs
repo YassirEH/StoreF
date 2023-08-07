@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public Product GetProduct(string name)
         {
-            return _context.Products.Where(p => p.Name == name).Include(p => p.ProductBuyers).FirstOrDefault();
+            return _context.Products.Include(p => p.ProductBuyers).FirstOrDefault(p => p.Name == name);
         }
 
         public ICollection<Product> GetProducts()
@@ -96,7 +96,7 @@ namespace Infrastructure.Repositories
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
 
         public bool UpdateProduct(int productId, Product updatedProduct)

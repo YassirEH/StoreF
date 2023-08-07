@@ -63,7 +63,7 @@ namespace Infrastructure.Repositories
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
 
         public bool UpdateBuyer(Buyer buyer)
