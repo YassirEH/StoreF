@@ -84,14 +84,14 @@ namespace Infrastructure.Repositories
                 {
                     var productCategory = new ProductCategory
                     {
-                        Product = product, // Associate the Product entity with the ProductCategory
+                        Product = product,
                         CategoryId = categoryId
                     };
                     _context.ProductCategories.Add(productCategory);
                 }
             }
 
-            return Save(); // Save changes after adding both the Product and ProductCategory entities
+            return Save();
         }
 
 
@@ -106,17 +106,10 @@ namespace Infrastructure.Repositories
         {
             var existingProduct = _context.Products.Find(productId);
 
-            if (existingProduct != null)
-            {
                 existingProduct.Name = updatedProduct.Name;
                 existingProduct.Description = updatedProduct.Description;
                 existingProduct.Price = updatedProduct.Price;
                 return Save();
-            }
-            else
-            {
-                throw new ArgumentException("Product not found with the given productId.");
-            }
         }
 
         public bool DeleteProduct(Product product)
