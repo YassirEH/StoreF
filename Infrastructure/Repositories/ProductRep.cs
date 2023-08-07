@@ -84,14 +84,17 @@ namespace Infrastructure.Repositories
                 {
                     var productCategory = new ProductCategory
                     {
-                        ProductId = product.Id,
+                        Product = product, // Associate the Product entity with the ProductCategory
                         CategoryId = categoryId
                     };
                     _context.ProductCategories.Add(productCategory);
                 }
             }
-            return Save();
+
+            return Save(); // Save changes after adding both the Product and ProductCategory entities
         }
+
+
 
         public bool Save()
         {
