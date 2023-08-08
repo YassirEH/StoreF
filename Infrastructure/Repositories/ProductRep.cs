@@ -28,73 +28,27 @@ namespace Infrastructure.Repositories
         {
             return _context.Products.OrderBy(p => p.Id).ToList();
         }
+
         public bool ProductExists(int productId)
         {
             return _context.Products.Any(p => p.Id == productId);
         }
 
-        public bool AddCategoriesToProduct(int productId, List<int> categoryIds)
+        public bool CreateProduct(Product product, int categoryId)
         {
-            var product = _context.Products
-                .Include(p => p.ProductCategories)
-                .FirstOrDefault(p => p.Id == productId);
+            var category = _context.Categories.FirstOrDefault(a => a.Id == categoryId);
 
-            if (product != null)
+            var productCategory = new ProductCategory()
             {
-                foreach (int categoryId in categoryIds)
-                {
-                    var existingCategory = product.ProductCategories.FirstOrDefault(pc => pc.CategoryId == categoryId);
-                    if (existingCategory == null)
-                    {
-                        var productCategory = new ProductCategory
-                        {
-                            ProductId = productId,
-                            CategoryId = categoryId
-                        };
-                        _context.ProductCategories.Add(productCategory);
-                    }
-                }
-                return Save();
-            }
-            return Save();
-        }
+                Category = category,
+                Product = product
+            };
 
-        public bool SetPrice(int productId, double price)
-        {
-            var product = _context.Products.Find(productId);
-
-            if (product != null)
-            {
-                product.Price = price;
-                return Save();
-            }
-            else
-            {
-                throw new ArgumentException("Product not found with the given productId.");
-            }
-        }
-
-        public bool CreateProduct(Product product, List<int> categoryIds)
-        {
-            _context.Products.Add(product);
-
-            if (categoryIds != null && categoryIds.Any())
-            {
-                foreach (int categoryId in categoryIds)
-                {
-                    var productCategory = new ProductCategory
-                    {
-                        Product = product,
-                        CategoryId = categoryId
-                    };
-                    _context.ProductCategories.Add(productCategory);
-                }
-            }
+            _context.ProductCategories.Add(productCategory);
+            _context.Add(product);
 
             return Save();
         }
-
-
 
         public bool Save()
         {
@@ -106,15 +60,16 @@ namespace Infrastructure.Repositories
         {
             var existingProduct = _context.Products.Find(productId);
 
-                existingProduct.Name = updatedProduct.Name;
-                existingProduct.Description = updatedProduct.Description;
-                existingProduct.Price = updatedProduct.Price;
-                return Save();
+            existingProduct!.Name = updatedProduct.Name;
+            existingProduct.Description = updatedProduct.Description;
+            existingProduct.Price = updatedProduct.Price;
+            return Save();
+
         }
 
         public bool DeleteProduct(Product product)
         {
-            _context.Remove(product);
+            _context.Products.Remove(product);
             return Save();
         }
     }

@@ -48,43 +48,10 @@ namespace webApi.Controllers
             return Ok(product);
         }
 
-        [HttpPost("{productId}/categories")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public IActionResult AddCategoriesToProduct(int productId, [FromBody] List<int> categoryIds)
-        {
-            if (!_productRep.ProductExists(productId))
-                return NotFound();
-
-            if (categoryIds == null || categoryIds.Count == 0)
-                return BadRequest("Category IDs must be provided.");
-
-            _productRep.AddCategoriesToProduct(productId, categoryIds);
-
-            return Ok();
-        }
-
-
-        [HttpPost("{productId}/setprice")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public IActionResult SetPrice(int productId, [FromBody] double price)
-        {
-            if (!_productRep.ProductExists(productId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            _productRep.SetPrice(productId, price);
-
-            return Ok();
-        }
-
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(ProductDto))]
         [ProducesResponseType(400)]
-        public IActionResult CreateProduct([FromBody] ProductDto productDto, [FromQuery] List<int> categoryIds)
+        public IActionResult CreateProduct([FromBody] ProductDto productDto, [FromQuery] int categoryId)
         {
             if (!ModelState.IsValid)
             {
@@ -93,7 +60,7 @@ namespace webApi.Controllers
 
             var product = _mapper.Map<Product>(productDto);
 
-            _productRep.CreateProduct(product, categoryIds);
+            _productRep.CreateProduct(product, categoryId);
 
             var createdProductDto = _mapper.Map<ProductDto>(product);
 

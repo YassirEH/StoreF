@@ -37,27 +37,19 @@ namespace Infrastructure.Repositories
 
         public void AssignBuyerToProduct(int buyerId, List<int> ProductIds)
         {
-            var buyer = _context.Buyers
-                .Include(b => b.ProductBuyers)
-                .FirstOrDefault(b => b.Id == buyerId);
+            var buyer = _context.Buyers.Include(b => b.ProductBuyers).FirstOrDefault(b => b.Id == buyerId);
 
-            if (buyer != null)
+            foreach (int productId in ProductIds)
             {
-                foreach (int productId in ProductIds)
+                var existingProduct = buyer!.ProductBuyers.FirstOrDefault(pb => pb.ProductId == productId);
+                var productBuyer = new ProductBuyer
                 {
-                    var existingProduct = buyer.ProductBuyers.FirstOrDefault(pb => pb.ProductId == productId);
-                    if (existingProduct == null)
-                    {
-                        var productBuyer = new ProductBuyer
-                        {
-                            BuyerId = buyerId,
-                            ProductId = productId,
-                        };
-                        _context.ProductBuyers.Add(productBuyer);
-                    }
-                }
-                Save();
+                    BuyerId = buyerId,
+                    ProductId = productId,
+                };
+                _context.ProductBuyers.Add(productBuyer);       
             }
+                Save();
         }
 
         public bool Save()
@@ -69,7 +61,7 @@ namespace Infrastructure.Repositories
         public bool UpdateBuyer(Buyer buyer)
         {
             var existingBuyer = _context.Buyers.FirstOrDefault(b => b.Id == buyer.Id);
-            existingBuyer.FName = buyer.FName;
+            existingBuyer!.FName = buyer.FName;
             existingBuyer.LName = buyer.LName;
             existingBuyer.Email = buyer.Email;
 
