@@ -8,9 +8,7 @@ namespace Core.Interfaces
         Product GetProduct(string name);
         ICollection<Product> GetProducts();
         bool ProductExists(int productId);
-        bool AddCategoriesToProduct(int productId, List<int> categoryIds);
-        bool SetPrice(int productId, double price);
-        bool CreateProduct(Product product, List<int> categoryIds);
+        bool CreateProduct(Product product, int categoryId);
         bool UpdateProduct(int productId, Product updatedProduct);
         bool DeleteProduct(Product product);
     }

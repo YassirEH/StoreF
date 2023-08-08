@@ -15,6 +15,11 @@ namespace Infrastructure.Repositories
 
         public int ProductId { get; internal set; }
 
+        public ICollection<Category> GetCategoryByProduct(int productId)
+        {
+            return _context.ProductCategories.Where(p=>p.ProductId == productId).Select(w=>w.Category).ToList();
+        }
+
         public ICollection<Product> GetProductByCategory(int categoryId)
         {
             return _context.ProductCategories.Where(e => e.CategoryId == categoryId).Select(c => c.Product).ToList();

@@ -29,5 +29,14 @@ namespace webApi.Controllers
                 return BadRequest(ModelState);
             return Ok(product);
         }
+
+        [HttpGet("Category/{productId}")]
+        [ProducesResponseType(200, Type = typeof(Product))]
+        [ProducesResponseType(400)]
+        public IActionResult GetCategoryByProduct(int productId)
+        {
+            var category = _mapper.Map<List<CategoryDto>>(_productCategoryRep.GetCategoryByProduct(productId));
+            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(category);
+        }
     }
 }
