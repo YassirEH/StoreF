@@ -38,13 +38,13 @@ namespace Infrastructure.Repositories
         {
             var category = _context.Categories.FirstOrDefault(a => a.Id == categoryId);
 
-            var pokemonCategory = new ProductCategory()
+            var productCategory = new ProductCategory()
             {
-                Category = category!,
+                Category = category,
                 Product = product
             };
 
-            _context.Add(category);
+            _context.ProductCategories.Add(productCategory);
             _context.Add(product);
 
             return Save();
