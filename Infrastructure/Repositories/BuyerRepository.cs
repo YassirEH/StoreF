@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class BuyerRep : IBuyerRep
+    public class BuyerRepository : IBuyerRepository
     {
         private readonly DataContext _context;
 
-        public BuyerRep(DataContext context)
+        public BuyerRepository(DataContext context)
         {
             _context = context;
         }

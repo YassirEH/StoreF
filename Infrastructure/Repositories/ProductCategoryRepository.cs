@@ -4,11 +4,11 @@ using Infrastructure.Models;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductCategoryRep : IProductCategoryRep
+    public class ProductCategoryRepository : IProductCategoryRepository
     {
         private readonly DataContext _context;
 
-        public ProductCategoryRep(DataContext context)
+        public ProductCategoryRepository(DataContext context)
         {
             _context = context;
         }

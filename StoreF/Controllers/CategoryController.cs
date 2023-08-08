@@ -11,11 +11,11 @@ namespace webApi.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRep _categoryRep;
+        private readonly ICategoryRepository _categoryRep;
         private readonly IMapper _mapper;
         private readonly DataContext _context; // Add this line to define the DataContext variable
 
-        public CategoryController(ICategoryRep categoryRep, IMapper mapper, DataContext context)
+        public CategoryController(ICategoryRepository categoryRep, IMapper mapper, DataContext context)
         {
             _categoryRep = categoryRep;
             _mapper = mapper;
