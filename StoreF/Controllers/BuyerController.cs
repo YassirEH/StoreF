@@ -10,10 +10,10 @@ namespace webApi.Controllers
     [Route("api/[controller]")]
     public class BuyerController : ControllerBase
     {
-        private readonly IBuyerRep _buyerRep;
+        private readonly IBuyerRepository _buyerRep;
         private readonly IMapper _mapper;
 
-        public BuyerController(IBuyerRep buyerRep, IMapper mapper)
+        public BuyerController(IBuyerRepository buyerRep, IMapper mapper)
         {
             _buyerRep = buyerRep;
             _mapper = mapper;
@@ -61,21 +61,7 @@ namespace webApi.Controllers
 
             return CreatedAtAction(nameof(GetBuyer), new { buyerId = createdBuyerDto });
         }
-        [HttpPost("{buyerId}/products")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public IActionResult AddCategoriesToProduct(int buyerId, [FromBody] List<int> productIds)
-        {
-            if (!_buyerRep.BuyerExists(buyerId))
-                return NotFound();
-
-            if (productIds == null || productIds.Count == 0)
-                return BadRequest("Buyer IDs must be provided.");
-
-            _buyerRep.AssignBuyerToProduct(buyerId, productIds);
-
-            return Ok();
-        }
+        
         [HttpPut("{buyerId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(200)]

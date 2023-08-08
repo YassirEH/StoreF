@@ -2,7 +2,7 @@
 
 namespace Core.Interfaces
 {
-    public interface IProductCategoryRep
+    public interface IProductCategoryRepository
     {
         ICollection<Product> GetProductByCategory(int categoryId);
         ICollection<Category> GetCategoryByProduct(int  productId);

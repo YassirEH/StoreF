@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductRep : IProductRep
+    public class ProductRepository : IProductRepository
     {
         private readonly DataContext _context;
 
-        public ProductRep(DataContext context)
+        public ProductRepository(DataContext context)
         {
             _context = context;
         }

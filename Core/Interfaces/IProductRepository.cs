@@ -2,7 +2,7 @@
 
 namespace Core.Interfaces
 {
-    public interface IProductRep
+    public interface IProductRepository
     {
         Product GetProduct(int id);
         Product GetProduct(string name);

@@ -10,10 +10,10 @@ namespace webApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRep _productRep;
+        private readonly IProductRepository _productRep;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRep productRep, IMapper mapper)
+        public ProductController(IProductRepository productRep, IMapper mapper)
         {
             _productRep = productRep;
             _mapper = mapper;

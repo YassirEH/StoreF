@@ -7,11 +7,11 @@ using webApi;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IProductRep, ProductRep>();
-builder.Services.AddScoped<ICategoryRep, CategoryRep>();
-builder.Services.AddScoped<IBuyerRep, BuyerRep>();
-builder.Services.AddScoped<IProductCategoryRep, ProductCategoryRep>();
-builder.Services.AddScoped<IProductBuyerRep, ProductBuyerRep>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+builder.Services.AddScoped<IProductBuyerRepository, ProductBuyerRepository>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

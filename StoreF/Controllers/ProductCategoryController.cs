@@ -10,10 +10,10 @@ namespace webApi.Controllers
     [Route("api/[controller]")]
     public class ProductCategoryController : ControllerBase
     {
-        private readonly IProductCategoryRep _productCategoryRep;
+        private readonly IProductCategoryRepository _productCategoryRep;
         private readonly IMapper _mapper;
 
-        public ProductCategoryController(IProductCategoryRep productCategoryRep, IMapper mapper)
+        public ProductCategoryController(IProductCategoryRepository productCategoryRep, IMapper mapper)
         {
             _productCategoryRep = productCategoryRep;
             _mapper = mapper;

@@ -2,7 +2,7 @@
 
 namespace Core.Interfaces
 {
-    public interface ICategoryRep
+    public interface ICategoryRepository
     {
         ICollection<Category> GetCategories();
         Category GetCategory(int id);
