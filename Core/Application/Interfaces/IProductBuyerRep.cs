@@ -1,8 +1,8 @@
-﻿using Infrastructure.Models;
+﻿using Core.Domain.Models;
 
-namespace Core.Interfaces
+namespace Core.Application.Interfaces
 {
-    public interface IProductBuyerRepository
+    public interface IProductBuyerRep
     {
         ICollection<Product> GetProductBuyer(int buyerId);
         ICollection<Buyer> GetBuyerOfProduct(int productId);

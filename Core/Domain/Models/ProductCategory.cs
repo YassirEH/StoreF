@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Models
+﻿namespace Core.Domain.Models
 {
     public class ProductCategory
     {

@@ -1,4 +1,4 @@
-using Core.Interfaces;
+using Core.Application.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +7,11 @@ using webApi;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
-builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
-builder.Services.AddScoped<IProductBuyerRepository, ProductBuyerRepository>();
+builder.Services.AddScoped<IProductRep, ProductRepository>();
+builder.Services.AddScoped<ICategoryRep, CategoryRepository>();
+builder.Services.AddScoped<IBuyerRep, BuyerRepository>();
+builder.Services.AddScoped<IProductCategoryRep, ProductCategoryRepository>();
+builder.Services.AddScoped<IProductBuyerRep, ProductBuyerRepository>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

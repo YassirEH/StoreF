@@ -1,4 +1,4 @@
-﻿namespace Core.Dto
+﻿namespace Core.Application.Dto
 {
     public class CategoryDto
     {

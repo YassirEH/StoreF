@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Dto;
-using Core.Interfaces;
-using Infrastructure.Models;
+using Core.Application.Dto;
+using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -10,10 +10,10 @@ namespace webApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRep;
+        private readonly IProductRep _productRep;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRepository productRep, IMapper mapper)
+        public ProductController(IProductRep productRep, IMapper mapper)
         {
             _productRep = productRep;
             _mapper = mapper;
@@ -24,8 +24,6 @@ namespace webApi.Controllers
         public IActionResult GetProducts()
         {
             var product = _mapper.Map<List<ProductDto>>(_productRep.GetProducts());
-
-
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -87,7 +85,7 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteCategory(int productId)
+        public IActionResult DeleteProduct(int productId)
         {
             if (!_productRep.ProductExists(productId))
             {

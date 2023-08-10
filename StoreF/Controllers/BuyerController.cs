@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Dto;
-using Core.Interfaces;
-using Infrastructure.Models;
+using Core.Application.Dto;
+using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -10,10 +10,10 @@ namespace webApi.Controllers
     [Route("api/[controller]")]
     public class BuyerController : ControllerBase
     {
-        private readonly IBuyerRepository _buyerRep;
+        private readonly IBuyerRep _buyerRep;
         private readonly IMapper _mapper;
 
-        public BuyerController(IBuyerRepository buyerRep, IMapper mapper)
+        public BuyerController(IBuyerRep buyerRep, IMapper mapper)
         {
             _buyerRep = buyerRep;
             _mapper = mapper;

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Core.Dto;
-using Core.Interfaces;
+using Core.Application.Dto;
+using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Infrastructure.Data;
-using Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -11,11 +11,11 @@ namespace webApi.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRep;
+        private readonly ICategoryRep _categoryRep;
         private readonly IMapper _mapper;
         private readonly DataContext _context; // Add this line to define the DataContext variable
 
-        public CategoryController(ICategoryRepository categoryRep, IMapper mapper, DataContext context)
+        public CategoryController(ICategoryRep categoryRep, IMapper mapper, DataContext context)
         {
             _categoryRep = categoryRep;
             _mapper = mapper;

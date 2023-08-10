@@ -1,11 +1,11 @@
-﻿using Core.Interfaces;
+﻿using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Infrastructure.Data;
-using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : IProductRep
     {
         private readonly DataContext _context;
 

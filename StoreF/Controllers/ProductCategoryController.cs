@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Dto;
-using Core.Interfaces;
-using Infrastructure.Models;
+using Core.Application.Dto;
+using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -10,10 +10,10 @@ namespace webApi.Controllers
     [Route("api/[controller]")]
     public class ProductCategoryController : ControllerBase
     {
-        private readonly IProductCategoryRepository _productCategoryRep;
+        private readonly IProductCategoryRep _productCategoryRep;
         private readonly IMapper _mapper;
 
-        public ProductCategoryController(IProductCategoryRepository productCategoryRep, IMapper mapper)
+        public ProductCategoryController(IProductCategoryRep productCategoryRep, IMapper mapper)
         {
             _productCategoryRep = productCategoryRep;
             _mapper = mapper;

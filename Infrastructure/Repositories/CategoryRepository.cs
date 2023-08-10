@@ -1,10 +1,10 @@
-﻿using Core.Interfaces;
+﻿using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Infrastructure.Data;
-using Infrastructure.Models;
 
 namespace Infrastructure.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : ICategoryRep
     {
         private DataContext _context;
 
@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
 
         public bool DeleteCategory(Category category)

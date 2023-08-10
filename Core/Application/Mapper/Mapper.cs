@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Core.Dto;
-using Infrastructure.Models;
+using Core.Application.Dto;
+using Core.Domain.Models;
 
-namespace Core.Mapper
+namespace Core.Application.Mapper
 {
     public class MappingProfiles : Profile
     {

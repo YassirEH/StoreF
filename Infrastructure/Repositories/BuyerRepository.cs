@@ -1,11 +1,10 @@
-﻿using Core.Interfaces;
+﻿using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Infrastructure.Data;
-using Infrastructure.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class BuyerRepository : IBuyerRepository
+    public class BuyerRepository : IBuyerRep
     {
         private readonly DataContext _context;
 
@@ -33,23 +32,6 @@ namespace Infrastructure.Repositories
         {
             _context.Buyers.Add(buyer);
             return Save();
-        }
-
-        public void AssignBuyerToProduct(int buyerId, List<int> ProductIds)
-        {
-            var buyer = _context.Buyers.Include(b => b.ProductBuyers).FirstOrDefault(b => b.Id == buyerId);
-
-            foreach (int productId in ProductIds)
-            {
-                var existingProduct = buyer!.ProductBuyers.FirstOrDefault(pb => pb.ProductId == productId);
-                var productBuyer = new ProductBuyer
-                {
-                    BuyerId = buyerId,
-                    ProductId = productId,
-                };
-                _context.ProductBuyers.Add(productBuyer);       
-            }
-                Save();
         }
 
         public bool Save()

@@ -1,10 +1,10 @@
-﻿using Core.Interfaces;
+﻿using Core.Application.Interfaces;
+using Core.Domain.Models;
 using Infrastructure.Data;
-using Infrastructure.Models;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductBuyerRepository : IProductBuyerRepository
+    public class ProductBuyerRepository : IProductBuyerRep
     {
         private readonly DataContext _context;
 

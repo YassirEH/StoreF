@@ -1,8 +1,8 @@
-﻿using Infrastructure.Models;
+﻿using Core.Domain.Models;
 
-namespace Core.Interfaces
+namespace Core.Application.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryRep
     {
         ICollection<Category> GetCategories();
         Category GetCategory(int id);

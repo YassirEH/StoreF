@@ -1,5 +1,5 @@
-﻿using Infrastructure.Data;
-using Infrastructure.Models;
+﻿using Core.Domain.Models;
+using Infrastructure.Data;
 
 namespace webApi
 {

@@ -1,8 +1,8 @@
-﻿using Infrastructure.Models;
+﻿using Core.Domain.Models;
 
-namespace Core.Interfaces
+namespace Core.Application.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRep
     {
         Product GetProduct(int id);
         Product GetProduct(string name);
