@@ -49,6 +49,7 @@ namespace webApi.Controllers
         [ProducesResponseType(201, Type = typeof(ProductDto))]
         [ProducesResponseType(400)]
 
+        [HttpPost]
         public IActionResult CreateBuyer([FromBody] BuyerDto buyerDto)
         {
             if (!ModelState.IsValid)
@@ -57,11 +58,11 @@ namespace webApi.Controllers
             var buyer = _mapper.Map<Buyer>(buyerDto);
 
             _buyerRep.CreateBuyer(buyer);
-            var createdBuyerDto = _mapper.Map<BuyerDto>(buyer);
 
-            return CreatedAtAction(nameof(GetBuyer), new { buyerId = createdBuyerDto });
+            // Assuming buyer.Id contains the generated ID after creation
+            return CreatedAtAction(nameof(GetBuyerById), new { buyerId = buyer.Id }, buyerDto);
         }
-        
+
         [HttpPut("{buyerId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(200)]

@@ -9,48 +9,49 @@ namespace webApi.Test.Controller
 {
     public class ProductControllerTests
     {
-        private readonly IProductRep _productRep;
-        private readonly IMapper _mapper;
+        private readonly Mock<IProductRep> _productRepMock;
+        private readonly Mock<IMapper> _mapperMock;
+
         public ProductControllerTests()
         {
-            _productRep = A.Fake<IProductRep>();
-            _mapper = A.Fake<IMapper>();
+            _productRepMock = new Mock<IProductRep>();
+            _mapperMock = new Mock<IMapper>();
         }
 
         [Fact]
         public void ProductController_GetProduct_ReturnOk()
         {
-            //arrange
-            var products = A.Fake<ICollection<ProductDto>>();
-            var productList = A.Fake<List<ProductDto>>();
-            A.CallTo(() => _mapper.Map<List<ProductDto>>(products)).Returns(productList);
-            var controller = new ProductController(_productRep, _mapper);
+            // Arrange
+            var products = new Mock<ICollection<ProductDto>>();
+            var productList = new Mock<List<ProductDto>>();
+            _mapperMock.Setup(mapper => mapper.Map<List<ProductDto>>(products.Object)).Returns(productList.Object);
+            var controller = new ProductController(_productRepMock.Object, _mapperMock.Object);
 
-            //act
+            // Act
             var result = controller.GetProducts();
-            //assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(OkObjectResult));
+
+            // Assert
+            result.Should().NotBeNull().And.BeOfType<OkObjectResult>();
         }
 
         [Fact]
         public void ProductController_CreateProduct_ReturnOk()
         {
-            //Arrange
+            // Arrange
             int categoryId = 2;
-            var productMap = A.Fake<Product>();
-            var product = A.Fake<Product>();
-            var productCreate = A.Fake<ProductDto>();
-            var products = A.Fake<ICollection<ProductDto>>();
-            var productList = A.Fake<IList<ProductDto>>();
-            A.CallTo(() => _mapper.Map<Product>(productCreate)).Returns(product);
-            A.CallTo(() => _productRep.CreateProduct(productMap, categoryId)).Returns(true);
-            var controller = new ProductController(_productRep, _mapper);
+            var productMap = new Mock<Product>();
+            var product = new Mock<Product>();
+            var productCreate = new Mock<ProductDto>();
+            var products = new Mock<ICollection<ProductDto>>();
+            var productList = new Mock<IList<ProductDto>>();
+            _mapperMock.Setup(mapper => mapper.Map<Product>(productCreate.Object)).Returns(product.Object);
+            _productRepMock.Setup(rep => rep.CreateProduct(productMap.Object, categoryId)).Returns(true);
+            var controller = new ProductController(_productRepMock.Object, _mapperMock.Object);
 
-            //Act
-            var result = controller.CreateProduct(productCreate, categoryId);
+            // Act
+            var result = controller.CreateProduct(productCreate.Object, categoryId);
 
-            //Assert
+            // Assert
             result.Should().NotBeNull();
         }
 
@@ -58,32 +59,34 @@ namespace webApi.Test.Controller
         [InlineData(1)]
         public void ProductController_UpdateProduct_ReturnOk(int productId)
         {
-            //Assemble
-            var product = A.Fake<Product>();
-            var existingProduct = A.Fake<ProductDto>();
-            A.CallTo(() => _mapper.Map<Product>(existingProduct)).Returns(product);
-            A.CallTo(() => _productRep.UpdateProduct(productId, product)).Returns(true);
-            var controller = new ProductController(_productRep, _mapper);
+            // Arrange
+            var product = new Mock<Product>();
+            var existingProduct = new Mock<ProductDto>();
+            _mapperMock.Setup(mapper => mapper.Map<Product>(existingProduct.Object)).Returns(product.Object);
+            _productRepMock.Setup(rep => rep.UpdateProduct(productId, product.Object)).Returns(true);
+            var controller = new ProductController(_productRepMock.Object, _mapperMock.Object);
 
-            //Act
-            var result = controller.UpdateProduct(productId, existingProduct);
+            // Act
+            var result = controller.UpdateProduct(productId, existingProduct.Object);
 
-            //Assert
+            // Assert
             result.Should().NotBeNull();
-
         }
 
         [Theory]
         [InlineData(1)]
         public void ProductController_DeleteProduct_ReturnOk(int productId)
         {
-            var productToDelete = A.Fake<Product>();
-            A.CallTo(() => _productRep.GetProduct(productId)).Returns(productToDelete);
-            A.CallTo(() => _productRep.DeleteProduct(productToDelete)).Returns(true);
-            var controller = new ProductController(_productRep, _mapper);
+            // Arrange
+            var productToDelete = new Mock<Product>();
+            _productRepMock.Setup(rep => rep.GetProduct(productId)).Returns(productToDelete.Object);
+            _productRepMock.Setup(rep => rep.DeleteProduct(productToDelete.Object)).Returns(true);
+            var controller = new ProductController(_productRepMock.Object, _mapperMock.Object);
 
+            // Act
             var result = controller.DeleteProduct(productId);
 
+            // Assert
             result.Should().NotBeNull();
         }
     }
