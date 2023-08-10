@@ -13,14 +13,12 @@ namespace webApi.Test
         private readonly Mock<IBuyerRep> _buyerRepMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly BuyerController _controller;
-        private readonly IMapper _mapper;
 
         public BuyerControllerTests()
         {
             _buyerRepMock = new Mock<IBuyerRep>();
             _mapperMock = new Mock<IMapper>();
             _controller = new BuyerController(_buyerRepMock.Object, _mapperMock.Object);
-            _mapper = A.Fake<IMapper>();
         }
 
         [Fact]
