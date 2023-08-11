@@ -89,5 +89,39 @@ namespace webApi.Test.Controller
             // Assert
             result.Should().NotBeNull();
         }
+
+        [Fact]
+        public void ProductController_GetProduct_NonExistingId_ReturnsNotFound()
+        {
+            // Arrange
+            var productId = 1;
+
+            _productRepMock.Setup(rep => rep.ProductExists(productId)).Returns(false);
+
+            var controller = new ProductController(_productRepMock.Object, _mapperMock.Object);
+
+            // Act
+            var result = controller.GetProduct(productId);
+
+            // Assert
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void ProductController_CreateProduct_InvalidModel_ReturnsBadRequest()
+        {
+            // Arrange
+            var productDto = new ProductDto();
+            var categoryId = 1;
+            var controller = new ProductController(_productRepMock.Object, _mapperMock.Object);
+            controller.ModelState.AddModelError("key", "error message");
+
+            // Act
+            var result = controller.CreateProduct(productDto, categoryId);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
     }
 }

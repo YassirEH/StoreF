@@ -13,13 +13,11 @@ namespace webApi.Controllers
     {
         private readonly ICategoryRep _categoryRep;
         private readonly IMapper _mapper;
-        private readonly DataContext _context; // Add this line to define the DataContext variable
 
-        public CategoryController(ICategoryRep categoryRep, IMapper mapper, DataContext context)
+        public CategoryController(ICategoryRep categoryRep, IMapper mapper)
         {
             _categoryRep = categoryRep;
             _mapper = mapper;
-            _context = context; // Initialize the DataContext variable through dependency injection
         }
 
         [HttpGet]
@@ -81,8 +79,6 @@ namespace webApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.SaveChanges();
-
             return NoContent();
         }
 
@@ -101,11 +97,14 @@ namespace webApi.Controllers
             var categoryToDelete = _categoryRep.GetCategory(categoryId);
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!_categoryRep.DeleteCategory(categoryToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting category");
+                return BadRequest(ModelState); // Return BadRequestObjectResult here
             }
 
             return NoContent();

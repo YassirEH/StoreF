@@ -1,10 +1,8 @@
 ﻿using Core.Application.Dto;
 using Core.Application.Interfaces;
 using Core.Domain.Models;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using webApi.Controllers;
-using FakeItEasy;
 
 namespace webApi.Test
 {
@@ -223,6 +221,5 @@ namespace webApi.Test
             // Assert
             Assert.IsType<NotFoundResult>(result);
         }
-
     }
 }
