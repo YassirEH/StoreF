@@ -32,7 +32,7 @@ namespace webApi.Test.Repository
         }
 
         [Fact]
-        public async Task CategoryRepository_CategoryExists_ReturnsTrue()
+        public async void CategoryRepository_CategoryExists_ReturnsTrue()
         {
             // Arrange
             var categoryId = 1;
@@ -47,7 +47,7 @@ namespace webApi.Test.Repository
         }
 
         [Fact]
-        public async Task CategoryRepository_GetCategory_ReturnsCategory()
+        public async void CategoryRepository_GetCategory_ReturnsCategory()
         {
             // Arrange
             var categoryId = 1;
@@ -63,7 +63,7 @@ namespace webApi.Test.Repository
         }
 
         [Fact]
-        public async Task CategoryRepository_GetCategories_ReturnsListOfCategories()
+        public async void CategoryRepository_GetCategories_ReturnsListOfCategories()
         {
             // Arrange
             var dbContext = await GetDatabaseContext();
@@ -78,7 +78,7 @@ namespace webApi.Test.Repository
         }
 
         [Fact]
-        public async Task CategoryRepository_CreateCategory_ReturnsTrue()
+        public async void CategoryRepository_CreateCategory_ReturnsTrue()
         {
             // Arrange
             var dbContext = await GetDatabaseContext();
@@ -94,7 +94,7 @@ namespace webApi.Test.Repository
         }
 
         [Fact]
-        public async Task CategoryRepository_UpdateCategory_ReturnsTrue()
+        public async void CategoryRepository_UpdateCategory_ReturnsTrue()
         {
             // Arrange
             var dbContext = await GetDatabaseContext();
@@ -110,7 +110,7 @@ namespace webApi.Test.Repository
         }
 
         [Fact]
-        public async Task CategoryRepository_DeleteCategory_ReturnsTrue()
+        public async void CategoryRepository_DeleteCategory_ReturnsTrue()
         {
             // Arrange
             var dbContext = await GetDatabaseContext();
@@ -126,3 +126,4 @@ namespace webApi.Test.Repository
         }
     }
 }
+

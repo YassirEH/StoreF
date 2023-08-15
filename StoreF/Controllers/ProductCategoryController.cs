@@ -25,9 +25,7 @@ namespace webApi.Controllers
         public IActionResult GetProductByCategory(int categoryId)
         {
             var product = _mapper.Map<List<ProductDto>>(_productCategoryRep.GetProductByCategory(categoryId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return Ok(product);
+            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(product);
         }
 
         [HttpGet("Category/{productId}")]

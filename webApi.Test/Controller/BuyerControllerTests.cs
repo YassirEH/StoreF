@@ -20,7 +20,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void GetBuyer_ReturnsOkResult()
+        public void BuyerController_GetBuyer_ReturnsOkResult()
         {
             // Arrange
             var buyers = new List<Buyer>();
@@ -36,10 +36,10 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void GetBuyerById_InvalidId_ReturnsNotFound()
+        public void BuyerController_GetBuyerById_InvalidId_ReturnsNotFound()
         {
             // Arrange
-            var buyerId = 1;
+            var buyerId = 12;
             _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
 
             // Act
@@ -50,7 +50,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void CreateBuyer_InvalidModel_ReturnsBadRequest()
+        public void BuyerController_CreateBuyer_InvalidModel_ReturnsBadRequest()
         {
             // Arrange
             var buyerDto = new BuyerDto();
@@ -64,7 +64,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void UpdateBuyer_InvalidId_ReturnsNotFound()
+        public void BuyerController_UpdateBuyer_InvalidId_ReturnsNotFound()
         {
             // Arrange
             var buyerId = 1;
@@ -78,7 +78,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void UpdateBuyer_InvalidModel_ReturnsBadRequest()
+        public void BuyerController_UpdateBuyer_InvalidModel_ReturnsBadRequest()
         {
             // Arrange
             var buyerId = 1;
@@ -94,7 +94,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void DeleteBuyer_InvalidId_ReturnsNotFound()
+        public void BuyerController_DeleteBuyer_InvalidId_ReturnsNotFound()
         {
             // Arrange
             var buyerId = 1;
@@ -108,7 +108,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void GetBuyer_ValidData_ReturnsOkWithListOfBuyerDto()
+        public void BuyerController_GetBuyer_ValidData_ReturnsOkWithListOfBuyerDto()
         {
             // Arrange
             var buyers = new List<Buyer>();
@@ -126,7 +126,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void GetBuyerById_ExistingId_ReturnsOkWithBuyerDto()
+        public void BuyerController_GetBuyerById_ExistingId_ReturnsOkWithBuyerDto()
         {
             // Arrange
             var buyerId = 1;
@@ -146,7 +146,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void GetBuyerById_NonExistingId_ReturnsNotFound()
+        public void BuyerController_GetBuyerById_NonExistingId_ReturnsNotFound()
         {
             // Arrange
             var buyerId = 1;
@@ -160,7 +160,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void UpdateBuyer_ExistingIdAndValidData_ReturnsNoContent()
+        public void BuyerController_UpdateBuyer_ExistingIdAndValidData_ReturnsNoContent()
         {
             // Arrange
             var buyerId = 1;
@@ -178,7 +178,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void UpdateBuyer_NonExistingId_ReturnsNotFound()
+        public void BuyerController_UpdateBuyer_NonExistingId_ReturnsNotFound()
         {
             // Arrange
             var buyerId = 1;
@@ -192,7 +192,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void DeleteBuyer_ExistingId_ReturnsNoContent()
+        public void BuyerController_DeleteBuyer_ExistingId_ReturnsNoContent()
         {
             // Arrange
             var buyerId = 1;
@@ -209,7 +209,7 @@ namespace webApi.Test
         }
 
         [Fact]
-        public void DeleteBuyer_NonExistingId_ReturnsNotFound()
+        public void BuyerController_DeleteBuyer_NonExistingId_ReturnsNotFound()
         {
             // Arrange
             var buyerId = 1;
