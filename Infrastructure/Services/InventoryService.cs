@@ -1,25 +1,21 @@
 ﻿using Core.Application.Interfaces;
+using Infrastructure.Data;
 
 namespace Infrastructure.Services
 {
     public class InventoryService : IInventoryService
     {
-        private Dictionary<int, int> _productStocks;
+        private readonly DataContext _dbContext;
 
-        public InventoryService()
+        public InventoryService(DataContext dbContext)
         {
-            _productStocks = new Dictionary<int, int>();
+            _dbContext = dbContext;
         }
 
         public int GetCurrentStock(int productId)
         {
-            // Check if the product exists in the dictionary
-            if (_productStocks.ContainsKey(productId))
-            {
-                return _productStocks[productId];
-            }
-
-            return 0; // Product not found, return 0 stock
+            var product = _dbContext.Products.Find(productId);
+            return product != null ? product.Stock : 0;
         }
 
         public bool IsProductInStock(int productId, int requiredQuantity)
@@ -30,26 +26,23 @@ namespace Infrastructure.Services
 
         public void UpdateStock(int productId, int quantity)
         {
-            // Check if the product exists in the dictionary
-            if (!_productStocks.ContainsKey(productId))
+            var product = _dbContext.Products.Find(productId);
+            if (product != null)
             {
-                _productStocks[productId] = 0;
+                product.Stock += quantity;
+                _dbContext.SaveChanges();
             }
-
-            // Update the stock based on the quantity
-            _productStocks[productId] += quantity;
         }
 
         public void AdjustStock(int productId, int adjustmentQuantity)
         {
-            // Check if the product exists in the dictionary
-            if (!_productStocks.ContainsKey(productId))
+            var product = _dbContext.Products.Find(productId);
+            if (product != null)
             {
-                _productStocks[productId] = 0;
+                product.Stock += adjustmentQuantity;
+                _dbContext.SaveChanges();
             }
-
-            // Adjust the stock based on the adjustment quantity
-            _productStocks[productId] += adjustmentQuantity;
         }
+
     }
 }
