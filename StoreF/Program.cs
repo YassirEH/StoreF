@@ -1,6 +1,7 @@
 using Core.Application.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using webApi;
 
@@ -12,6 +13,8 @@ builder.Services.AddScoped<ICategoryRep, CategoryRepository>();
 builder.Services.AddScoped<IBuyerRep, BuyerRepository>();
 builder.Services.AddScoped<IProductCategoryRep, ProductCategoryRepository>();
 builder.Services.AddScoped<IProductBuyerRep, ProductBuyerRepository>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
