@@ -19,7 +19,7 @@ namespace webApi.Controllers
         {
             if (_inventoryService.IsProductInStock(productId, quantity))
             {
-                _inventoryService.UpdateStock(productId, -quantity); 
+                _inventoryService.AddStock(productId, -quantity); 
                 return Ok("Purchase successful!");
             }
             else
@@ -31,15 +31,15 @@ namespace webApi.Controllers
         [HttpPost("add-stock")]
         public IActionResult AddStock(int productId, int quantity)
         {
-            _inventoryService.AdjustStock(productId, quantity);
-            return Ok($"Added {quantity} units of stock for Product ID: {productId}");
+            _inventoryService.AddStock(productId, quantity);
+            return Ok();
         }
 
         [HttpPost("deduct-stock")]
         public IActionResult DeductStock(int productId, int quantity)
         {
-            _inventoryService.AdjustStock(productId, -quantity);
-            return Ok($"Deducted {quantity} units of stock for Product ID: {productId}");
+            _inventoryService.AddStock(productId, -quantity);
+            return Ok();
         }
 
         [HttpPut("update-stock")]
@@ -47,8 +47,8 @@ namespace webApi.Controllers
         {
             int currentStock = _inventoryService.GetCurrentStock(productId);
             int adjustmentQuantity = newStock - currentStock;
-            _inventoryService.AdjustStock(productId, adjustmentQuantity);
-            return Ok($"Updated stock for Product ID: {productId} to {newStock}");
+            _inventoryService.AddStock(productId, adjustmentQuantity);
+            return Ok();
         }
     }
 }

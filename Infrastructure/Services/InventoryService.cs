@@ -15,7 +15,7 @@ namespace Infrastructure.Services
         public int GetCurrentStock(int productId)
         {
             var product = _dbContext.Products.Find(productId);
-            return product != null ? product.Stock : 0;
+            return product.Stock;
         }
 
         public bool IsProductInStock(int productId, int requiredQuantity)
@@ -24,24 +24,11 @@ namespace Infrastructure.Services
             return currentStock >= requiredQuantity;
         }
 
-        public void UpdateStock(int productId, int quantity)
+        public void AddStock(int productId, int adjustmentQuantity)
         {
             var product = _dbContext.Products.Find(productId);
-            if (product != null)
-            {
-                product.Stock += quantity;
-                _dbContext.SaveChanges();
-            }
-        }
-
-        public void AdjustStock(int productId, int adjustmentQuantity)
-        {
-            var product = _dbContext.Products.Find(productId);
-            if (product != null)
-            {
-                product.Stock += adjustmentQuantity;
-                _dbContext.SaveChanges();
-            }
+            product.Stock += adjustmentQuantity;
+            _dbContext.SaveChanges();
         }
 
     }
