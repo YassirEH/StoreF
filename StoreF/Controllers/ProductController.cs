@@ -21,7 +21,10 @@ namespace webApi.Controllers
             _genericRep = genericRep;
         }
 
-        [HttpGet]
+//------All Get Methods-------------------------------------------------------------------------------------------------------------------------------
+
+
+        [HttpGet("Get All")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
         public IActionResult GetProducts()
         {
@@ -47,6 +50,42 @@ namespace webApi.Controllers
 
             return Ok(product);
         }
+
+        [HttpGet("Filter By Name")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
+        public IActionResult FilterByName()
+        {
+            var product = _mapper.Map<List<ProductDto>>(_productRep.FilterByName());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(product);
+        }
+
+        [HttpGet("Filter By Price")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
+        public IActionResult FilterByPrice()
+        {
+            var product = _mapper.Map<List<ProductDto>>(_productRep.FilterByPrice());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(product);
+        }
+
+        [HttpGet("Filter By Quantity")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
+        public IActionResult FilterByQuantity()
+        {
+            var product = _mapper.Map<List<ProductDto>>(_productRep.FilterByQuantity());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(product);
+        }
+
+
+        //------Post----Put----Delete---------------------------------------------------------------------------------------------------------------------------
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(ProductDto))]
@@ -106,5 +145,6 @@ namespace webApi.Controllers
 
             return NoContent();
         }
+
     }
 }
