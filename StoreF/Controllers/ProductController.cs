@@ -12,18 +12,20 @@ namespace webApi.Controllers
     {
         private readonly IProductRep _productRep;
         private readonly IMapper _mapper;
+        private readonly IGenericRep _genericRep;
 
-        public ProductController(IProductRep productRep, IMapper mapper)
+        public ProductController(IProductRep productRep, IMapper mapper, IGenericRep genericRep)
         {
             _productRep = productRep;
             _mapper = mapper;
+            _genericRep = genericRep;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
         public IActionResult GetProducts()
         {
-            var product = _mapper.Map<List<ProductDto>>(_productRep.GetProducts());
+            var product = _mapper.Map<List<ProductDto>>(_genericRep.GetProducts());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,10 +37,10 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetProduct(int productId)
         {
-            if (!_productRep.ProductExists(productId))
+            if (!_genericRep.ProductExists(productId))
                 return NotFound();
 
-            var product = _mapper.Map<ProductDto>(_productRep.GetProduct(productId));
+            var product = _mapper.Map<ProductDto>(_genericRep.GetProduct(productId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -58,7 +60,7 @@ namespace webApi.Controllers
 
             var product = _mapper.Map<Product>(productDto);
 
-            _productRep.CreateProduct(product, categoryId);
+            _genericRep.CreateProduct(product, categoryId);
 
             var createdProductDto = _mapper.Map<ProductDto>(product);
 
@@ -71,14 +73,14 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult UpdateProduct(int productId, [FromBody] ProductDto productDto)
         {
-            if (!_productRep.ProductExists(productId))
+            if (!_genericRep.ProductExists(productId))
                 return NotFound(ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var existingProduct = _mapper.Map<Product>(productDto);
-            _productRep.UpdateProduct(productId, existingProduct);
+            _genericRep.UpdateProduct(productId, existingProduct);
             return NoContent();
         }
         [HttpDelete("{productId}")]
@@ -87,17 +89,17 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteProduct(int productId)
         {
-            if (!_productRep.ProductExists(productId))
+            if (!_genericRep.ProductExists(productId))
             {
                 return NotFound();
             }
 
-            var productToDelete = _productRep.GetProduct(productId);
+            var productToDelete = _genericRep.GetProduct(productId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_productRep.DeleteProduct(productToDelete))
+            if (!_genericRep.DeleteProduct(productToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting this product");
             }

@@ -14,6 +14,7 @@ builder.Services.AddScoped<IBuyerRep, BuyerRepository>();
 builder.Services.AddScoped<IProductCategoryRep, ProductCategoryRepository>();
 builder.Services.AddScoped<IProductBuyerRep, ProductBuyerRepository>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IGenericRep, GenericRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
