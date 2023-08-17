@@ -12,18 +12,20 @@ namespace webApi.Controllers
     {
         private readonly IBuyerRep _buyerRep;
         private readonly IMapper _mapper;
+        private readonly IGenericRep _genericRep;
 
-        public BuyerController(IBuyerRep buyerRep, IMapper mapper)
+        public BuyerController(IBuyerRep buyerRep, IMapper mapper, IGenericRep genericRep)
         {
             _buyerRep = buyerRep;
             _mapper = mapper;
+            _genericRep = genericRep;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<BuyerDto>))]
         public IActionResult GetBuyer()
         {
-            var buyers = _buyerRep.GetBuyers();
+            var buyers = _genericRep.GetBuyers();
             var buyerDto = _mapper.Map<List<BuyerDto>>(buyers);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,10 +37,10 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetBuyerById(int buyerId)
         {
-            if (!_buyerRep.BuyerExists(buyerId))
+            if (!_genericRep.BuyerExists(buyerId))
                 return NotFound();
 
-            var buyer = _mapper.Map<BuyerDto>(_buyerRep.GetBuyer(buyerId));
+            var buyer = _mapper.Map<BuyerDto>(_genericRep.GetBuyer(buyerId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -57,7 +59,7 @@ namespace webApi.Controllers
 
             var buyer = _mapper.Map<Buyer>(buyerDto);
 
-            _buyerRep.CreateBuyer(buyer);
+            _genericRep.CreateBuyer(buyer);
 
             // Assuming buyer.Id contains the generated ID after creation
             return CreatedAtAction(nameof(GetBuyerById), new { buyerId = buyer.Id }, buyerDto);
@@ -69,15 +71,15 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult UpdateBuyer(int buyerId, BuyerDto buyerDto)
         {
-            if (!_buyerRep.BuyerExists(buyerId))
+            if (!_genericRep.BuyerExists(buyerId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingBuyer = _buyerRep.GetBuyer(buyerId);
+            var existingBuyer = _genericRep.GetBuyer(buyerId);
             _mapper.Map(buyerDto, existingBuyer);
-            _buyerRep.UpdateBuyer(existingBuyer);
+            _genericRep.UpdateBuyer(existingBuyer);
             return NoContent();
         }
         [HttpDelete("{buyerId}")]
@@ -86,17 +88,17 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteBuyer(int buyerId)
         {
-            if (!_buyerRep.BuyerExists(buyerId))
+            if (!_genericRep.BuyerExists(buyerId))
             {
                 return NotFound();
             }
 
-            var buyerToDelete = _buyerRep.GetBuyer(buyerId);
+            var buyerToDelete = _genericRep.GetBuyer(buyerId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_buyerRep.DeleteBuyer(buyerToDelete))
+            if (!_genericRep.DeleteBuyer(buyerToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting this buyer");
             }

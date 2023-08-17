@@ -13,12 +13,14 @@ namespace webApi.Controllers
         private readonly IProductBuyerRep _productBuyerRep;
         private readonly IMapper _mapper;
         private readonly IBuyerRep _buyerRep;
+        private readonly IGenericRep _genericRep;
 
-        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep)
+        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep, IGenericRep genericRep)
         {
             _productBuyerRep = productBuyerRep;
             _mapper = mapper;
             _buyerRep = buyerRep;
+            _genericRep = genericRep;
         }
 
         [HttpGet("Product/{buyerId}")]
@@ -46,7 +48,7 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult AssignProductToBuyer(int buyerId, [FromBody] int productId)
         {
-            if (!_buyerRep.BuyerExists(buyerId))
+            if (!_genericRep.BuyerExists(buyerId))
                 return NotFound();
 
             if (productId <= 0)

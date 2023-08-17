@@ -3,19 +3,19 @@ using Infrastructure.Data;
 
 namespace Infrastructure.Repositories
 {
-    public class BuyerRepository : IBuyerRep
+    public class CategoryRepository : ICategoryRep
     {
-        private readonly DataContext _context;
+        private DataContext _context;
 
-        public BuyerRepository(DataContext context)
+        public CategoryRepository(DataContext context)
         {
             _context = context;
         }
-
+        
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0;
+            return saved > 0 ? true : false;
         }
     }
 }
