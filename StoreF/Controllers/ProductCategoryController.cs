@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Application.Dto;
-using Core.Application.Interfaces;
-using Core.Domain.Models;
+using Core.Dto;
+using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers

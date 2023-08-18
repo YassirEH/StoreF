@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Application.Dto;
-using Core.Application.Interfaces;
-using Core.Domain.Models;
+using Core.Dto;
+using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -13,14 +13,12 @@ namespace webApi.Controllers
         private readonly IProductBuyerRep _productBuyerRep;
         private readonly IMapper _mapper;
         private readonly IBuyerRep _buyerRep;
-        private readonly IGenericRep _genericRep;
 
-        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep, IGenericRep genericRep)
+        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep)
         {
             _productBuyerRep = productBuyerRep;
             _mapper = mapper;
             _buyerRep = buyerRep;
-            _genericRep = genericRep;
         }
 
         [HttpGet("Product/{buyerId}")]
@@ -48,7 +46,7 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult AssignProductToBuyer(int buyerId, [FromBody] int productId)
         {
-            if (!_genericRep.BuyerExists(buyerId))
+            if (!_buyerRep.BuyerExists(buyerId))
                 return NotFound();
 
             if (productId <= 0)

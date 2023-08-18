@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Application.Dto;
-using Core.Application.Interfaces;
-using Core.Domain.Models;
+using Core.Dto;
+using Core.Interfaces;
+using Core.Models;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,20 +13,18 @@ namespace webApi.Controllers
     {
         private readonly ICategoryRep _categoryRep;
         private readonly IMapper _mapper;
-        private readonly IGenericRep _genericRep;
 
-        public CategoryController(ICategoryRep categoryRep, IMapper mapper, IGenericRep genericRep)
+        public CategoryController(ICategoryRep categoryRep, IMapper mapper)
         {
             _categoryRep = categoryRep;
             _mapper = mapper;
-            _genericRep = genericRep;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
         public IActionResult GetCategories()
         {
-            var categories = _genericRep.GetCategories();
+            var categories = _categoryRep.GetCategories();
             var categoryDto = _mapper.Map<List<CategoryDto>>(categories);
 
             return !ModelState.IsValid ? BadRequest(ModelState) : Ok(categoryDto);
@@ -37,10 +35,10 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetCategory(int categoryId)
         {
-            if (!_genericRep.CategoryExists(categoryId))
+            if (!_categoryRep.CategoryExists(categoryId))
                 return NotFound();
 
-            var category = _mapper.Map<CategoryDto>(_genericRep.GetCategory(categoryId));
+            var category = _mapper.Map<CategoryDto>(_categoryRep.GetCategory(categoryId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -57,7 +55,7 @@ namespace webApi.Controllers
                 return BadRequest(ModelState);
 
             var category = _mapper.Map<Category>(categoryDto);
-            _genericRep.CreateCategory(category);
+            _categoryRep.CreateCategory(category);
             var createdCategoryDto = _mapper.Map<CategoryDto>(category);
             return CreatedAtAction(nameof(GetCategory), new { categoryId = category.Id }, createdCategoryDto);
         }
@@ -71,7 +69,7 @@ namespace webApi.Controllers
             if (updatedCategory == null)
                 return BadRequest(ModelState);
 
-            var existingCategory = _genericRep.GetCategory(categoryId);
+            var existingCategory = _categoryRep.GetCategory(categoryId);
             if (existingCategory == null)
                 return NotFound();
 
@@ -91,19 +89,19 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteCategory(int categoryId)
         {
-            if (!_genericRep.CategoryExists(categoryId))
+            if (!_categoryRep.CategoryExists(categoryId))
             {
                 return NotFound();
             }
 
-            var categoryToDelete = _genericRep.GetCategory(categoryId);
+            var categoryToDelete = _categoryRep.GetCategory(categoryId);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_genericRep.DeleteCategory(categoryToDelete))
+            if (!_categoryRep.DeleteCategory(categoryToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting category");
                 return BadRequest(ModelState); // Return BadRequestObjectResult here

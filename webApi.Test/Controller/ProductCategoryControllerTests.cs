@@ -1,5 +1,5 @@
-﻿using Core.Application.Interfaces;
-using Core.Domain.Models;
+﻿using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using webApi.Controllers;
 

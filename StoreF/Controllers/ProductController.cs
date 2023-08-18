@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Application.Dto;
-using Core.Application.Interfaces;
-using Core.Domain.Models;
+using Core.Dto;
+using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -12,13 +12,11 @@ namespace webApi.Controllers
     {
         private readonly IProductRep _productRep;
         private readonly IMapper _mapper;
-        private readonly IGenericRep _genericRep;
 
-        public ProductController(IProductRep productRep, IMapper mapper, IGenericRep genericRep)
+        public ProductController(IProductRep productRep, IMapper mapper)
         {
             _productRep = productRep;
             _mapper = mapper;
-            _genericRep = genericRep;
         }
 
 //------All Get Methods-------------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +26,7 @@ namespace webApi.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
         public IActionResult GetProducts()
         {
-            var product = _mapper.Map<List<ProductDto>>(_genericRep.GetProducts());
+            var product = _mapper.Map<List<ProductDto>>(_productRep.GetProducts());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -40,10 +38,10 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetProduct(int productId)
         {
-            if (!_genericRep.ProductExists(productId))
+            if (!_productRep.ProductExists(productId))
                 return NotFound();
 
-            var product = _mapper.Map<ProductDto>(_genericRep.GetProduct(productId));
+            var product = _mapper.Map<ProductDto>(_productRep.GetProduct(productId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -99,7 +97,7 @@ namespace webApi.Controllers
 
             var product = _mapper.Map<Product>(productDto);
 
-            _genericRep.CreateProduct(product, categoryId);
+            _productRep.CreateProduct(product, categoryId);
 
             var createdProductDto = _mapper.Map<ProductDto>(product);
 
@@ -112,14 +110,14 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult UpdateProduct(int productId, [FromBody] ProductDto productDto)
         {
-            if (!_genericRep.ProductExists(productId))
+            if (!_productRep.ProductExists(productId))
                 return NotFound(ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var existingProduct = _mapper.Map<Product>(productDto);
-            _genericRep.UpdateProduct(productId, existingProduct);
+            _productRep.UpdateProduct(productId, existingProduct);
             return NoContent();
         }
         [HttpDelete("{productId}")]
@@ -128,17 +126,17 @@ namespace webApi.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteProduct(int productId)
         {
-            if (!_genericRep.ProductExists(productId))
+            if (!_productRep.ProductExists(productId))
             {
                 return NotFound();
             }
 
-            var productToDelete = _genericRep.GetProduct(productId);
+            var productToDelete = _productRep.GetProduct(productId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_genericRep.DeleteProduct(productToDelete))
+            if (!_productRep.DeleteProduct(productToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting this product");
             }

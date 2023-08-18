@@ -1,9 +1,8 @@
-﻿using Core.Domain.Models;
+﻿using Core.Models;
 using FluentAssertions;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace webApi.Test.Repository
 {
@@ -16,9 +15,9 @@ namespace webApi.Test.Repository
                 .Options;
             var databaseContext = new DataContext(option);
             databaseContext.Database.EnsureCreated();
-            if(await databaseContext.Products.CountAsync() <= 0)
+            if (await databaseContext.Products.CountAsync() <= 0)
             {
-                for (int i = 0 ; i < 10; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     databaseContext.Products.Add(
                         new Product()
@@ -31,7 +30,7 @@ namespace webApi.Test.Repository
                             }
                         }
                         );
-                    await databaseContext.SaveChangesAsync();   
+                    await databaseContext.SaveChangesAsync();
                 }
             }
             return databaseContext;
@@ -39,7 +38,7 @@ namespace webApi.Test.Repository
 
         [Fact]
         public async void ProductRepository_GetProduct_ReturnOk()
-        {   
+        {
             //Assemble
             var name = "Galaxy A52";
             var dbContext = await GetDatabaseContext();
@@ -115,14 +114,14 @@ namespace webApi.Test.Repository
             var productId = 3;
             var dbContext = await GetDatabaseContext();
             var productRepository = new ProductRepository(dbContext);
-            
+
             var product = new Product()
             {
                 Name = "Galaxy A52",
                 Description = "A great mid tier phone (still better than any iphone out there)",
                 Price = 3400
             };
-            dbContext.Products.Add(product); 
+            dbContext.Products.Add(product);
             dbContext.SaveChanges();
 
             var updatedProduct = new Product()
@@ -130,7 +129,7 @@ namespace webApi.Test.Repository
                 Name = "Galaxy A52",
                 Description = "Old Ahh phone must be slow by today's standards",
                 Price = 2300
-            };           
+            };
             //act
             var result = productRepository.UpdateProduct(productId, updatedProduct);
 
@@ -155,7 +154,7 @@ namespace webApi.Test.Repository
 
             dbContext.Products.Add(product);
             dbContext.SaveChanges();
-            
+
 
             //Act
             var result = productRepository.DeleteProduct(product);

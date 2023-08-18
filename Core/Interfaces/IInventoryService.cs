@@ -1,4 +1,4 @@
-﻿namespace Core.Application.Interfaces
+﻿namespace Core.Interfaces
 {
     public interface IInventoryService
     {

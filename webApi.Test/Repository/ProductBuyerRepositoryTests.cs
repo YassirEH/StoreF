@@ -1,10 +1,7 @@
-﻿using Core.Domain.Models;
+﻿using Core.Models;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using Xunit;
 
 namespace webApi.Test.Repository
 {
@@ -26,7 +23,7 @@ namespace webApi.Test.Repository
             if (dbContext.Products.Count() <= 0)
             {
                 var product = new Product { Id = 1, Name = "Product 1", Description = "Description 1" };
-                var buyer = new Buyer { Id = 1, FName = "John", LName = "Doe", Email="dfgf@dfg.com" };
+                var buyer = new Buyer { Id = 1, FName = "John", LName = "Doe", Email = "dfgf@dfg.com" };
                 dbContext.Products.Add(product);
                 dbContext.Buyers.Add(buyer);
                 dbContext.ProductBuyers.Add(new ProductBuyer { ProductId = 1, BuyerId = 1 });

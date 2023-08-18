@@ -1,6 +1,6 @@
-﻿using Core.Domain.Models;
+﻿using Core.Models;
 
-namespace Core.Application.Interfaces
+namespace Core.Interfaces
 {
     public interface IProductBuyerRep
     {

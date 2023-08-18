@@ -1,4 +1,4 @@
-﻿using Core.Domain.Models;
+﻿using Core.Models;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;

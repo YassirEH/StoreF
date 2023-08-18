@@ -1,4 +1,4 @@
-﻿using Core.Application.Interfaces;
+﻿using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using webApi.Controllers;
 
@@ -71,8 +71,8 @@ namespace Tests
         public void DeductStock_ValidInput_ReturnsOk()
         {
             // Arrange
-            int productId = 1;
-            int quantity = 5;
+            int productId = 56456;
+            int quantity = 5345345;
 
             // Act
             IActionResult result = _inventoryController.DeductStock(productId, quantity);

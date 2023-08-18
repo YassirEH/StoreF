@@ -1,4 +1,4 @@
-﻿using Core.Application.Interfaces;
+﻿using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webApi.Controllers
@@ -39,7 +39,7 @@ namespace webApi.Controllers
         public IActionResult DeductStock(int productId, int quantity)
         {
             _inventoryService.AddStock(productId, -quantity);
-            return Ok();
+            return Ok($"Deducted {quantity} units of stock for Product ID: {productId}");
         }
 
         [HttpPut("update-stock")]
@@ -48,7 +48,7 @@ namespace webApi.Controllers
             int currentStock = _inventoryService.GetCurrentStock(productId);
             int adjustmentQuantity = newStock - currentStock;
             _inventoryService.AddStock(productId, adjustmentQuantity);
-            return Ok();
+            return Ok($"Updated stock for Product ID: {productId} to {newStock}");
         }
     }
 }

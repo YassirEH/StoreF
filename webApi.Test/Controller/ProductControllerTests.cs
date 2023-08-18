@@ -1,6 +1,6 @@
-﻿using Core.Application.Dto;
-using Core.Application.Interfaces;
-using Core.Domain.Models;
+﻿using Core.Dto;
+using Core.Interfaces;
+using Core.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using webApi.Controllers;
@@ -21,7 +21,7 @@ namespace webApi.Test.Controller
         [Fact]
         public void ProductController_GetProduct_ReturnOk()
         {
-            
+
 
 
             // Arrange

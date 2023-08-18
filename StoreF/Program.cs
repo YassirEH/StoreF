@@ -1,4 +1,4 @@
-using Core.Application.Interfaces;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -14,7 +14,6 @@ builder.Services.AddScoped<IBuyerRep, BuyerRepository>();
 builder.Services.AddScoped<IProductCategoryRep, ProductCategoryRepository>();
 builder.Services.AddScoped<IProductBuyerRep, ProductBuyerRepository>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
-builder.Services.AddScoped<IGenericRep, GenericRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -52,6 +51,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// This line is common for both approaches
 
 app.MapControllers();
 

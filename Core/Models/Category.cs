@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Models
+﻿namespace Core.Models
 {
     public class Category
     {

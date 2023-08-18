@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Core.Application.Dto;
-using Core.Domain.Models;
+using Core.Dto;
+using Core.Models;
 
 namespace Core.Application.Mapper
 {
