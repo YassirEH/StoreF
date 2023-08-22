@@ -1,15 +1,18 @@
-﻿using Core.Interfaces;
+﻿using AutoMapper;
+using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using webApi.Application.Services;
 
 namespace webApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class InventoryController : ControllerBase
+    public class InventoryController : APIController
     {
         private readonly IInventoryService _inventoryService;
 
-        public InventoryController(IInventoryService inventoryService)
+        public InventoryController(IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
+            : base(mapper, notificationService)
         {
             _inventoryService = inventoryService;
         }
@@ -19,11 +22,13 @@ namespace webApi.Controllers
         {
             if (_inventoryService.IsProductInStock(productId, quantity))
             {
-                _inventoryService.AddStock(productId, -quantity); 
-                return Ok("Purchase successful!");
+                _inventoryService.AddStock(productId, -quantity);
+                _notificationService.Notify("Purchase successful!", "Success", ErrorType.Success);
+                return Response("Purchase successful!");
             }
             else
             {
+                _notificationService.Notify("Product is out of stock.", "Error", ErrorType.Error);
                 return BadRequest("Product is out of stock.");
             }
         }
@@ -32,6 +37,7 @@ namespace webApi.Controllers
         public IActionResult AddStock(int productId, int quantity)
         {
             _inventoryService.AddStock(productId, quantity);
+            _notificationService.Notify("Stock added successfully!", "Success", ErrorType.Success);
             return Ok();
         }
 
@@ -39,7 +45,8 @@ namespace webApi.Controllers
         public IActionResult DeductStock(int productId, int quantity)
         {
             _inventoryService.AddStock(productId, -quantity);
-            return Ok($"Deducted {quantity} units of stock for Product ID: {productId}");
+            _notificationService.Notify($"Deducted {quantity} units of stock for Product ID: {productId}", "Info", ErrorType.Info);
+            return Response($"Deducted {quantity} units of stock for Product ID: {productId}");
         }
 
         [HttpPut("update-stock")]
@@ -48,7 +55,8 @@ namespace webApi.Controllers
             int currentStock = _inventoryService.GetCurrentStock(productId);
             int adjustmentQuantity = newStock - currentStock;
             _inventoryService.AddStock(productId, adjustmentQuantity);
-            return Ok($"Updated stock for Product ID: {productId} to {newStock}");
+            _notificationService.Notify($"Updated stock for Product ID: {productId} to {newStock}", "Info", ErrorType.Info);
+            return Response($"Updated stock for Product ID: {productId} to {newStock}");
         }
     }
 }

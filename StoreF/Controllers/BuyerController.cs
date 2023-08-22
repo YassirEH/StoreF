@@ -3,20 +3,20 @@ using Core.Dto;
 using Core.Interfaces;
 using Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using webApi.Application.Services;
 
 namespace webApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BuyerController : ControllerBase
+    public class BuyerController : APIController
     {
         private readonly IBuyerRep _buyerRep;
-        private readonly IMapper _mapper;
 
-        public BuyerController(IBuyerRep buyerRep, IMapper mapper)
+        public BuyerController(IBuyerRep buyerRep, IMapper mapper, INotificationService notificationService)
+            : base(mapper, notificationService)
         {
             _buyerRep = buyerRep;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -27,7 +27,7 @@ namespace webApi.Controllers
             var buyerDto = _mapper.Map<List<BuyerDto>>(buyers);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(buyerDto);
+            return Response(buyerDto);
         }
 
         [HttpGet("{buyerId}")]
@@ -42,14 +42,12 @@ namespace webApi.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(buyer);
+            return Response(buyer);
         }
 
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(ProductDto))]
+        [ProducesResponseType(201, Type = typeof(BuyerDto))]
         [ProducesResponseType(400)]
-
-        [HttpPost]
         public IActionResult CreateBuyer([FromBody] BuyerDto buyerDto)
         {
             if (!ModelState.IsValid)
@@ -58,6 +56,8 @@ namespace webApi.Controllers
             var buyer = _mapper.Map<Buyer>(buyerDto);
 
             _buyerRep.CreateBuyer(buyer);
+
+            _notificationService.Notify("A new buyer has been created", "Success", ErrorType.Success);
 
             // Assuming buyer.Id contains the generated ID after creation
             return CreatedAtAction(nameof(GetBuyerById), new { buyerId = buyer.Id }, buyerDto);
@@ -80,6 +80,7 @@ namespace webApi.Controllers
             _buyerRep.UpdateBuyer(existingBuyer);
             return NoContent();
         }
+
         [HttpDelete("{buyerId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -96,12 +97,19 @@ namespace webApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_buyerRep.DeleteBuyer(buyerToDelete))
+            bool deleteResult = _buyerRep.DeleteBuyer(buyerToDelete);
+
+            if (deleteResult)
+            {
+                _notificationService.Notify("The buyer has been deleted", "Success", ErrorType.Success);
+                return NoContent();
+            }
+            else
             {
                 ModelState.AddModelError("", "Something went wrong deleting this buyer");
+                _notificationService.Notify("Error deleting the buyer", "Error", ErrorType.Error);
+                return BadRequest(ModelState);
             }
-
-            return NoContent();
         }
     }
 }
