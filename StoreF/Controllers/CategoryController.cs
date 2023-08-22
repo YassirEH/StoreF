@@ -2,22 +2,21 @@
 using Core.Dto;
 using Core.Interfaces;
 using Core.Models;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using webApi.Application.Services;
 
 namespace webApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController : APIController
     {
         private readonly ICategoryRep _categoryRep;
-        private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryRep categoryRep, IMapper mapper)
+        public CategoryController(ICategoryRep categoryRep, IMapper mapper, INotificationService notificationService)
+            : base(mapper, notificationService)
         {
             _categoryRep = categoryRep;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -27,7 +26,7 @@ namespace webApi.Controllers
             var categories = _categoryRep.GetCategories();
             var categoryDto = _mapper.Map<List<CategoryDto>>(categories);
 
-            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(categoryDto);
+            return !ModelState.IsValid ? BadRequest(ModelState) : Response(categoryDto);
         }
 
         [HttpGet("{categoryId}")]
@@ -43,7 +42,7 @@ namespace webApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(category);
+            return Response(category);
         }
 
         [HttpPost]
@@ -57,6 +56,9 @@ namespace webApi.Controllers
             var category = _mapper.Map<Category>(categoryDto);
             _categoryRep.CreateCategory(category);
             var createdCategoryDto = _mapper.Map<CategoryDto>(category);
+
+            _notificationService.Notify("A new category has been created", "Success", ErrorType.Success);
+
             return CreatedAtAction(nameof(GetCategory), new { categoryId = category.Id }, createdCategoryDto);
         }
 
@@ -75,13 +77,11 @@ namespace webApi.Controllers
 
             existingCategory.Name = updatedCategory.Name;
 
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             return NoContent();
         }
-
 
         [HttpDelete("{categoryId}")]
         [ProducesResponseType(400)]
@@ -101,13 +101,19 @@ namespace webApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_categoryRep.DeleteCategory(categoryToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting category");
-                return BadRequest(ModelState); // Return BadRequestObjectResult here
-            }
+            bool deleteResult = _categoryRep.DeleteCategory(categoryToDelete);
 
-            return NoContent();
+            if (deleteResult)
+            {
+                _notificationService.Notify("The category has been deleted", "Success", ErrorType.Success);
+                return NoContent();
+            }
+            else
+            {
+                ModelState.AddModelError("", "Something went wrong deleting this category");
+                _notificationService.Notify("Error deleting the category", "Error", ErrorType.Error);
+                return BadRequest(ModelState);
+            }
         }
     }
 }

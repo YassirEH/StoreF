@@ -3,21 +3,21 @@ using Core.Dto;
 using Core.Interfaces;
 using Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using webApi.Application.Services;
 
 namespace webApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductBuyerController : ControllerBase
+    public class ProductBuyerController : APIController
     {
         private readonly IProductBuyerRep _productBuyerRep;
-        private readonly IMapper _mapper;
         private readonly IBuyerRep _buyerRep;
 
-        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep)
+        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep, INotificationService notificationService)
+            : base(mapper, notificationService)
         {
             _productBuyerRep = productBuyerRep;
-            _mapper = mapper;
             _buyerRep = buyerRep;
         }
 
@@ -28,7 +28,7 @@ namespace webApi.Controllers
         {
             var product = _mapper.Map<List<ProductDto>>(_productBuyerRep.GetProductBuyer(buyerId));
 
-            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(product);
+            return !ModelState.IsValid ? BadRequest(ModelState) : Response(product);
         }
 
         [HttpGet("Buyer/{productId}")]
@@ -38,7 +38,7 @@ namespace webApi.Controllers
         {
             var buyer = _mapper.Map<List<BuyerDto>>(_productBuyerRep.GetBuyerOfProduct(productId));
 
-            return !ModelState.IsValid ? BadRequest(ModelState) : Ok(buyer);
+            return !ModelState.IsValid ? BadRequest(ModelState) : Response(buyer);
         }
 
         [HttpPost("{buyerId}/products")]
@@ -47,13 +47,20 @@ namespace webApi.Controllers
         public IActionResult AssignProductToBuyer(int buyerId, [FromBody] int productId)
         {
             if (!_buyerRep.BuyerExists(buyerId))
+            {
+                _notificationService.Notify("Buyer not found", "Error", ErrorType.NotFound);
                 return NotFound();
+            }
 
             if (productId <= 0)
+            {
+                _notificationService.Notify("Invalid product ID provided", "Error", ErrorType.Error);
                 return BadRequest("Invalid product ID provided.");
+            }
 
             _productBuyerRep.AssignProductToBuyer(buyerId, productId);
 
+            _notificationService.Notify("Product assigned to buyer", "Success", ErrorType.Success);
             return Ok();
         }
     }
