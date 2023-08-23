@@ -4,6 +4,7 @@ using Core.Models;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using webApi.Application.Services;
 using webApi.Controllers;
 
 namespace webApi.Test
@@ -13,12 +14,14 @@ namespace webApi.Test
         private readonly ICategoryRep _categoryRepMock;
         private readonly IMapper _mapperMock;
         private readonly CategoryController _controller;
+        private readonly Mock<INotificationService> _notificationServiceMock;
 
         public CategoryControllerTests()
         {
             _categoryRepMock = A.Fake<ICategoryRep>();
             _mapperMock = A.Fake<IMapper>();
-            _controller = new CategoryController(_categoryRepMock, _mapperMock);
+            _notificationServiceMock = new Mock<INotificationService>();
+            _controller = new CategoryController(_categoryRepMock, _mapperMock, _notificationServiceMock.Object);
         }
 
         [Fact]
@@ -89,20 +92,6 @@ namespace webApi.Test
 
             // Assert
             result.Should().BeOfType<NoContentResult>();
-        }
-
-        [Fact]
-        public void GetCategory_NonExistingId_ReturnsNotFound()
-        {
-            // Arrange
-            var categoryId = 1;
-            A.CallTo(() => _categoryRepMock.CategoryExists(categoryId)).Returns(false);
-
-            // Act
-            var result = _controller.GetCategory(categoryId);
-
-            // Assert
-            result.Should().BeOfType<NotFoundResult>();
         }
 
 

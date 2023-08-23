@@ -11,12 +11,14 @@ namespace webApi.Controllers
     [Route("api/[controller]")]
     public class ProductBuyerController : APIController
     {
+        private readonly IMapper _mapper;
         private readonly IProductBuyerRep _productBuyerRep;
         private readonly IBuyerRep _buyerRep;
 
         public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep, INotificationService notificationService)
-            : base(mapper, notificationService)
+            : base(notificationService)
         {
+            _mapper = mapper;
             _productBuyerRep = productBuyerRep;
             _buyerRep = buyerRep;
         }

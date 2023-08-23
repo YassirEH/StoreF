@@ -24,9 +24,14 @@ namespace Infrastructure.Repositories
             return _context.Buyers.Any(b => b.Id == id);
         }
 
-        public Buyer GetBuyer(int id)
+        public Buyer GetBuyerById(int id)
         {
             return _context.Buyers.FirstOrDefault(x => x.Id == id);
+        }
+
+        public ICollection<Buyer> FilterByName()
+        {
+            return _context.Buyers.OrderBy(b => b.LName).ToList();
         }
 
         public ICollection<Buyer> GetBuyers()

@@ -11,8 +11,8 @@ namespace webApi.Controllers
     {
         private readonly IInventoryService _inventoryService;
 
-        public InventoryController(IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
-            : base(mapper, notificationService)
+        public InventoryController(IInventoryService inventoryService, INotificationService notificationService)
+            : base(notificationService)
         {
             _inventoryService = inventoryService;
         }

@@ -57,7 +57,7 @@ namespace webApi.Test.Repository
             var dbContext = await GetDatabaseContext();
             var buyerRepository = new BuyerRepository(dbContext);
 
-            var result = buyerRepository.GetBuyer(id);
+            var result = buyerRepository.GetBuyerById(id);
 
             dbContext.SaveChanges();
 

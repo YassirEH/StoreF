@@ -1,86 +1,104 @@
 ﻿using Core.Interfaces;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using webApi.Controllers;
+using webApi.Application.Services;
+using Xunit;
 
-namespace Tests
+namespace webApi.Test.Controller
 {
     public class InventoryControllerTests
     {
-        private readonly Mock<IInventoryService> _mockInventoryService;
-        private readonly InventoryController _inventoryController;
+        private readonly InventoryController _controller;
+        private readonly Mock<IInventoryService> _inventoryServiceMock;
+        private readonly Mock<INotificationService> _notificationServiceMock;
 
         public InventoryControllerTests()
         {
-            _mockInventoryService = new Mock<IInventoryService>();
-            _inventoryController = new InventoryController(_mockInventoryService.Object);
+            _inventoryServiceMock = new Mock<IInventoryService>();
+            _notificationServiceMock = new Mock<INotificationService>();
+            _controller = new InventoryController(_inventoryServiceMock.Object, _notificationServiceMock.Object);
         }
 
-        // Existing tests for PurchaseProduct, AddStock, and DeductStock...
-
         [Fact]
-        public void UpdateStock_ValidInput_ReturnsOk()
+        public void InventoryController_PurchaseProduct_ProductOutOfStock_ReturnsBadRequest()
         {
             // Arrange
-            int productId = 1;
-            int newStock = 20;
-            int currentStock = 10;
-            _mockInventoryService.Setup(service => service.GetCurrentStock(productId)).Returns(currentStock);
+            int productId = 2;
+            int quantity = 5;
+            _inventoryServiceMock.Setup(service => service.IsProductInStock(productId, quantity)).Returns(false);
 
             // Act
-            IActionResult result = _inventoryController.UpdateStock(productId, newStock);
+            var result = _controller.PurchaseProduct(productId, quantity);
 
             // Assert
-            Assert.IsType<OkObjectResult>(result);
-            Assert.Equal($"Updated stock for Product ID: {productId} to {newStock}", (result as OkObjectResult)?.Value);
-            _mockInventoryService.Verify(service => service.AddStock(productId, newStock - currentStock), Times.Once);
+            result.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Should().NotBeNull();
+            badRequestResult.Value.Should().Be("Product is out of stock.");
+            _notificationServiceMock.Verify(service => service.Notify("Product is out of stock.", "Error", ErrorType.Error), Times.Once);
         }
 
         [Fact]
-        public void PurchaseProduct_ProductInStock_ReturnsOk()
+        public void InventoryController_AddStock_ReturnsSuccessResponse()
         {
             // Arrange
             int productId = 1;
             int quantity = 5;
-            _mockInventoryService.Setup(service => service.IsProductInStock(productId, quantity)).Returns(true);
 
             // Act
-            IActionResult result = _inventoryController.PurchaseProduct(productId, quantity);
+            var result = _controller.AddStock(productId, quantity);
 
             // Assert
-            Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Purchase successful!", (result as OkObjectResult)?.Value);
+            result.Should().NotBeNull().And.BeOfType<OkResult>();
+            _inventoryServiceMock.Verify(service => service.AddStock(productId, quantity), Times.Once);
+            _notificationServiceMock.Verify(service => service.Notify("Stock added successfully!", "Success", ErrorType.Success), Times.Once);
         }
 
         [Fact]
-        public void PurchaseProduct_ProductOutOfStock_ReturnsBadRequest()
+        public void InventoryController_DeductStock_ReturnsSuccessResponse()
         {
             // Arrange
-            int productId = 1;
-            int quantity = 5;
-            _mockInventoryService.Setup(service => service.IsProductInStock(productId, quantity)).Returns(false);
+            int productId = 2;
+            int quantity = 2;
 
             // Act
-            IActionResult result = _inventoryController.PurchaseProduct(productId, quantity);
+            var result = _controller.DeductStock(productId, quantity);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Product is out of stock.", (result as BadRequestObjectResult)?.Value);
+            result.Should().NotBeNull().And.BeOfType<OkObjectResult>();
+            var okResult = result as OkObjectResult;
+            okResult.Should().NotBeNull();
+            var responseMessage = okResult.Value.GetType().GetProperty("data").GetValue(okResult.Value, null);
+            responseMessage.Should().Be($"Deducted {quantity} units of stock for Product ID: {productId}");
+            _inventoryServiceMock.Verify(service => service.AddStock(productId, -quantity), Times.Once);
+            _notificationServiceMock.Verify(service => service.Notify($"Deducted {quantity} units of stock for Product ID: {productId}", "Info", ErrorType.Info), Times.Once);
         }
+
 
         [Fact]
-        public void DeductStock_ValidInput_ReturnsOk()
+        public void InventoryController_UpdateStock_ReturnsSuccessResponse()
         {
             // Arrange
-            int productId = 56456;
-            int quantity = 5345345;
+            int productId = 3;
+            int newStock = 10;
+            _inventoryServiceMock.Setup(service => service.GetCurrentStock(productId)).Returns(5);
 
             // Act
-            IActionResult result = _inventoryController.DeductStock(productId, quantity);
+            var result = _controller.UpdateStock(productId, newStock);
 
             // Assert
-            Assert.IsType<OkObjectResult>(result);
-            Assert.Equal($"Deducted {quantity} units of stock for Product ID: {productId}", (result as OkObjectResult)?.Value);
+            result.Should().NotBeNull().And.BeOfType<OkObjectResult>();
+            var okResult = result as OkObjectResult;
+            okResult.Should().NotBeNull();
+            var responseMessage = okResult.Value.GetType().GetProperty("data").GetValue(okResult.Value, null);
+            responseMessage.Should().Be($"Updated stock for Product ID: {productId} to {newStock}");
+            _inventoryServiceMock.Verify(service => service.AddStock(productId, newStock - 5), Times.Once);
+            _notificationServiceMock.Verify(service => service.Notify($"Updated stock for Product ID: {productId} to {newStock}", "Info", ErrorType.Info), Times.Once);
         }
+
+
 
     }
 }

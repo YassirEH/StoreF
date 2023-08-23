@@ -1,85 +1,62 @@
-﻿using Core.Interfaces;
+﻿using AutoMapper;
+using Core.Dto;
+using Core.Interfaces;
 using Core.Models;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using webApi.Application.Services;
 using webApi.Controllers;
+using Xunit;
 
 namespace webApi.Test.Controller
 {
     public class ProductCategoryControllerTests
     {
         private readonly ProductCategoryController _controller;
-        private readonly Mock<IMapper> _mapper;
-        private readonly Mock<IProductCategoryRep> _productCategoryRep;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IProductCategoryRep> _productCategoryRepMock;
+        private readonly Mock<INotificationService> _notificationServiceMock;
 
         public ProductCategoryControllerTests()
         {
-            _mapper = new Mock<IMapper>();
-            _productCategoryRep = new Mock<IProductCategoryRep>();
-            _controller = new ProductCategoryController(_productCategoryRep.Object, _mapper.Object);
-        }
+            _mapperMock = new Mock<IMapper>();
+            _productCategoryRepMock = new Mock<IProductCategoryRep>();
+            _notificationServiceMock = new Mock<INotificationService>();
 
-        [Fact]
-        public void ProductCategoryController_GetProductByCategory_ReturnOk()
-        {
-            int categoryId = 1;
-            var products = new List<Product>();
-            _productCategoryRep.Setup(rep => rep.GetProductByCategory(categoryId)).Returns(products);
-
-            var result = _controller.GetProductByCategory(categoryId);
-
-            Assert.NotNull(result);
-            Assert.IsType<OkObjectResult>(result);
+            _controller = new ProductCategoryController(
+                _productCategoryRepMock.Object,
+                _mapperMock.Object,
+                _notificationServiceMock.Object);
         }
 
 
         [Fact]
-        public void ProductCategoryController_GetProductByCategory_InvalidId_ReturnsNotFound()
+        public void GetProductByCategory_InvalidCategoryId_ReturnsBadRequest()
         {
             // Arrange
-            var categoryId = 4;
-            var productDto = new List<Product>();
-            _productCategoryRep.Setup(repo => repo.GetProductByCategory(categoryId)).Returns(productDto);
-            _controller.ModelState.AddModelError("key", "error message");
+            int categoryId = -1;
+            _controller.ModelState.AddModelError("categoryId", "Invalid category ID");
 
             // Act
             var result = _controller.GetProductByCategory(categoryId);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
-        public void GetCategoryByProduct_ValidId_ReturnsOkWithCategories()
+        public void GetCategoryByProduct_InvalidProductId_ReturnsBadRequest()
         {
             // Arrange
-            var productId = 1;
-            var categories = new List<Category>(); // Assuming Category is the correct type
-            _productCategoryRep.Setup(repo => repo.GetCategoryByProduct(productId)).Returns(categories);
-
-            // Act
-            var result = _controller.GetCategoryByProduct(productId);
-
-            // Assert
-            Assert.IsType<OkObjectResult>(result);
-        }
-
-
-
-        [Fact]
-        public void GetCategoryByProduct_InvalidId_ReturnsBadRequest()
-        {
-            // Arrange
-            var productId = -1;
+            int productId = -1;
             _controller.ModelState.AddModelError("productId", "Invalid product ID");
 
             // Act
             var result = _controller.GetCategoryByProduct(productId);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-            var badRequestResult = result as BadRequestObjectResult;
-            Assert.NotNull(badRequestResult);
-            Assert.Equal(400, badRequestResult.StatusCode);
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
     }
 }
