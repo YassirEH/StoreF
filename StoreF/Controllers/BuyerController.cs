@@ -11,11 +11,13 @@ namespace webApi.Controllers
     [Route("api/[controller]")]
     public class BuyerController : APIController
     {
+        private readonly IMapper _mapper;
         private readonly IBuyerRep _buyerRep;
 
         public BuyerController(IBuyerRep buyerRep, IMapper mapper, INotificationService notificationService)
-            : base(mapper, notificationService)
+            : base(notificationService)
         {
+            _mapper = mapper;
             _buyerRep = buyerRep;
         }
 
@@ -38,12 +40,25 @@ namespace webApi.Controllers
             if (!_buyerRep.BuyerExists(buyerId))
                 return NotFound();
 
-            var buyer = _mapper.Map<BuyerDto>(_buyerRep.GetBuyer(buyerId));
+            var buyer = _mapper.Map<BuyerDto>(_buyerRep.GetBuyerById(buyerId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Response(buyer);
         }
+
+        [HttpGet("Filter By Name")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BuyerDto>))]
+        [ProducesResponseType(400)]
+        public IActionResult FilterByName()
+        {
+            var buyers = _buyerRep.FilterByName();
+            var buyerDto = _mapper.Map<List<BuyerDto>>(buyers);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Response(buyerDto);
+        }
+
 
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(BuyerDto))]
@@ -75,7 +90,7 @@ namespace webApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingBuyer = _buyerRep.GetBuyer(buyerId);
+            var existingBuyer = _buyerRep.GetBuyerById(buyerId);
             _mapper.Map(buyerDto, existingBuyer);
             _buyerRep.UpdateBuyer(existingBuyer);
             return NoContent();
@@ -92,7 +107,7 @@ namespace webApi.Controllers
                 return NotFound();
             }
 
-            var buyerToDelete = _buyerRep.GetBuyer(buyerId);
+            var buyerToDelete = _buyerRep.GetBuyerById(buyerId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

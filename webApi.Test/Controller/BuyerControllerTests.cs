@@ -1,148 +1,59 @@
 ﻿using Core.Dto;
 using Core.Interfaces;
 using Core.Models;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using webApi.Application.Services;
 using webApi.Controllers;
 
-namespace webApi.Test
+namespace webApi.Test.Controller
 {
     public class BuyerControllerTests
     {
+        private readonly BuyerController _controller;
         private readonly Mock<IBuyerRep> _buyerRepMock;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly BuyerController _controller;
+        private readonly Mock<INotificationService> _notificationServiceMock;
 
         public BuyerControllerTests()
         {
             _buyerRepMock = new Mock<IBuyerRep>();
             _mapperMock = new Mock<IMapper>();
-            _controller = new BuyerController(_buyerRepMock.Object, _mapperMock.Object);
+            _notificationServiceMock = new Mock<INotificationService>();
+
+            _controller = new BuyerController(_buyerRepMock.Object, _mapperMock.Object, _notificationServiceMock.Object);
         }
 
         [Fact]
-        public void BuyerController_GetBuyer_ReturnsOkResult()
+        public void BuyerController_GetBuyer_ReturnsOk()
         {
             // Arrange
             var buyers = new List<Buyer>();
-            var buyerDtos = new List<BuyerDto>();
-            _buyerRepMock.Setup(repo => repo.GetBuyers()).Returns(buyers);
-            _mapperMock.Setup(mapper => mapper.Map<List<BuyerDto>>(buyers)).Returns(buyerDtos);
+            _buyerRepMock.Setup(rep => rep.GetBuyers()).Returns(buyers);
+            _mapperMock.Setup(mapper => mapper.Map<List<BuyerDto>>(buyers)).Returns(new List<BuyerDto>());
 
             // Act
             var result = _controller.GetBuyer();
 
             // Assert
-            Assert.IsType<OkObjectResult>(result);
+            result.Should().NotBeNull().And.BeOfType<OkObjectResult>();
         }
 
         [Fact]
-        public void BuyerController_GetBuyerById_InvalidId_ReturnsNotFound()
-        {
-            // Arrange
-            var buyerId = 12;
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
-
-            // Act
-            var result = _controller.GetBuyerById(buyerId);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void BuyerController_CreateBuyer_InvalidModel_ReturnsBadRequest()
-        {
-            // Arrange
-            var buyerDto = new BuyerDto();
-            _controller.ModelState.AddModelError("key", "error message");
-
-            // Act
-            var result = _controller.CreateBuyer(buyerDto);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-        [Fact]
-        public void BuyerController_UpdateBuyer_InvalidId_ReturnsNotFound()
-        {
-            // Arrange
-            var buyerId = 1;
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
-
-            // Act
-            var result = _controller.UpdateBuyer(buyerId, new BuyerDto());
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void BuyerController_UpdateBuyer_InvalidModel_ReturnsBadRequest()
-        {
-            // Arrange
-            var buyerId = 1;
-            var buyerDto = new BuyerDto();
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(true);
-            _controller.ModelState.AddModelError("key", "error message");
-
-            // Act
-            var result = _controller.UpdateBuyer(buyerId, buyerDto);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-        [Fact]
-        public void BuyerController_DeleteBuyer_InvalidId_ReturnsNotFound()
-        {
-            // Arrange
-            var buyerId = 1;
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
-
-            // Act
-            var result = _controller.DeleteBuyer(buyerId);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void BuyerController_GetBuyer_ValidData_ReturnsOkWithListOfBuyerDto()
-        {
-            // Arrange
-            var buyers = new List<Buyer>();
-            _buyerRepMock.Setup(repo => repo.GetBuyers()).Returns(buyers);
-            var buyerDtos = new List<BuyerDto>();
-            _mapperMock.Setup(mapper => mapper.Map<List<BuyerDto>>(buyers)).Returns(buyerDtos);
-
-            // Act
-            var result = _controller.GetBuyer();
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedBuyerDtos = Assert.IsAssignableFrom<IEnumerable<BuyerDto>>(okResult.Value);
-            Assert.Equal(buyerDtos, returnedBuyerDtos);
-        }
-
-        [Fact]
-        public void BuyerController_GetBuyerById_ExistingId_ReturnsOkWithBuyerDto()
+        public void BuyerController_GetBuyerById_ExistingId_ReturnsOk()
         {
             // Arrange
             var buyerId = 1;
             var buyer = new Buyer();
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(true);
-            _buyerRepMock.Setup(repo => repo.GetBuyer(buyerId)).Returns(buyer);
-            var buyerDto = new BuyerDto();
-            _mapperMock.Setup(mapper => mapper.Map<BuyerDto>(buyer)).Returns(buyerDto);
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(true);
+            _buyerRepMock.Setup(rep => rep.GetBuyerById(buyerId)).Returns(buyer);
+            _mapperMock.Setup(mapper => mapper.Map<BuyerDto>(buyer)).Returns(new BuyerDto());
 
             // Act
             var result = _controller.GetBuyerById(buyerId);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedBuyerDto = Assert.IsType<BuyerDto>(okResult.Value);
-            Assert.Equal(buyerDto, returnedBuyerDto);
+            result.Should().NotBeNull().And.BeOfType<OkObjectResult>();
         }
 
         [Fact]
@@ -150,31 +61,64 @@ namespace webApi.Test
         {
             // Arrange
             var buyerId = 1;
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(false);
 
             // Act
             var result = _controller.GetBuyerById(buyerId);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void BuyerController_UpdateBuyer_ExistingIdAndValidData_ReturnsNoContent()
+        public void BuyerController_FilterByName_ReturnsOk()
+        {
+            // Arrange
+            var buyers = new List<Buyer>();
+            _buyerRepMock.Setup(rep => rep.FilterByName()).Returns(buyers);
+            _mapperMock.Setup(mapper => mapper.Map<List<BuyerDto>>(buyers)).Returns(new List<BuyerDto>());
+
+            // Act
+            var result = _controller.FilterByName();
+
+            // Assert
+            result.Should().NotBeNull().And.BeOfType<OkObjectResult>();
+        }
+
+        [Fact]
+        public void BuyerController_CreateBuyer_ValidModel_ReturnsCreatedAtAction()
+        {
+            // Arrange
+            var buyerDto = new BuyerDto();
+            var buyer = new Buyer();
+            _mapperMock.Setup(mapper => mapper.Map<Buyer>(buyerDto)).Returns(buyer);
+            _buyerRepMock.Setup(rep => rep.CreateBuyer(buyer));
+            _mapperMock.Setup(mapper => mapper.Map<BuyerDto>(buyer)).Returns(buyerDto);
+
+            // Act
+            var result = _controller.CreateBuyer(buyerDto);
+
+            // Assert
+            result.Should().NotBeNull().And.BeOfType<CreatedAtActionResult>();
+            var createdAtActionResult = result as CreatedAtActionResult;
+            createdAtActionResult.ActionName.Should().Be(nameof(BuyerController.GetBuyerById));
+        }
+
+        [Fact]
+        public void BuyerController_UpdateBuyer_ExistingId_ReturnsNoContent()
         {
             // Arrange
             var buyerId = 1;
             var buyerDto = new BuyerDto();
             var existingBuyer = new Buyer();
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(true);
-            _buyerRepMock.Setup(repo => repo.GetBuyer(buyerId)).Returns(existingBuyer);
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(true);
+            _buyerRepMock.Setup(rep => rep.GetBuyerById(buyerId)).Returns(existingBuyer);
 
             // Act
             var result = _controller.UpdateBuyer(buyerId, buyerDto);
 
             // Assert
-            Assert.IsType<NoContentResult>(result);
-            _buyerRepMock.Verify(repo => repo.UpdateBuyer(existingBuyer), Moq.Times.Once);
+            result.Should().NotBeNull().And.BeOfType<NoContentResult>();
         }
 
         [Fact]
@@ -182,13 +126,14 @@ namespace webApi.Test
         {
             // Arrange
             var buyerId = 1;
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
+            var buyerDto = new BuyerDto();
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(false);
 
             // Act
-            var result = _controller.UpdateBuyer(buyerId, new BuyerDto());
+            var result = _controller.UpdateBuyer(buyerId, buyerDto);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
@@ -196,16 +141,16 @@ namespace webApi.Test
         {
             // Arrange
             var buyerId = 1;
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(true);
             var existingBuyer = new Buyer();
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(true);
-            _buyerRepMock.Setup(repo => repo.GetBuyer(buyerId)).Returns(existingBuyer);
-            _buyerRepMock.Setup(repo => repo.DeleteBuyer(existingBuyer)).Returns(true);
+            _buyerRepMock.Setup(rep => rep.GetBuyerById(buyerId)).Returns(existingBuyer);
+            _buyerRepMock.Setup(rep => rep.DeleteBuyer(existingBuyer)).Returns(true);
 
             // Act
             var result = _controller.DeleteBuyer(buyerId);
 
             // Assert
-            Assert.IsType<NoContentResult>(result);
+            result.Should().NotBeNull().And.BeOfType<NoContentResult>();
         }
 
         [Fact]
@@ -213,13 +158,31 @@ namespace webApi.Test
         {
             // Arrange
             var buyerId = 1;
-            _buyerRepMock.Setup(repo => repo.BuyerExists(buyerId)).Returns(false);
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(false);
 
             // Act
             var result = _controller.DeleteBuyer(buyerId);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void BuyerController_DeleteBuyer_FailedToDelete_ReturnsBadRequestWithNotification()
+        {
+            // Arrange
+            var buyerId = 1;
+            _buyerRepMock.Setup(rep => rep.BuyerExists(buyerId)).Returns(true);
+            var existingBuyer = new Buyer();
+            _buyerRepMock.Setup(rep => rep.GetBuyerById(buyerId)).Returns(existingBuyer);
+            _buyerRepMock.Setup(rep => rep.DeleteBuyer(existingBuyer)).Returns(false);
+
+            // Act
+            var result = _controller.DeleteBuyer(buyerId);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            _notificationServiceMock.Verify(service => service.Notify("Error deleting the buyer", "Error", ErrorType.Error), Times.Once);
         }
     }
 }

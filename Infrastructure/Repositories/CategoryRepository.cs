@@ -29,6 +29,11 @@ namespace Infrastructure.Repositories
             return _context.Categories.FirstOrDefault(e => e.Id == id);
         }
 
+        public ICollection<Category> FilterByName()
+        {
+            return _context.Categories.OrderBy(c => c.Name).ToList();
+        }
+
         public ICollection<Category> GetCategories()
         {
             return _context.Categories.ToList();
@@ -51,5 +56,7 @@ namespace Infrastructure.Repositories
             _context.Remove(category);
             return Save();
         }
+
+        
     }
 }

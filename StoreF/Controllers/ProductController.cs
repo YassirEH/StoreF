@@ -11,11 +11,13 @@ namespace webApi.Controllers
     [ApiController]
     public class ProductController : APIController
     {
+        private readonly IMapper _mapper;
         private readonly IProductRep _productRep;
 
         public ProductController(IProductRep productRep, IMapper mapper, INotificationService notificationService)
-            : base(mapper, notificationService)
+            : base(notificationService)
         {
+            _mapper = mapper;
             _productRep = productRep;
         }
 
@@ -96,7 +98,6 @@ namespace webApi.Controllers
 
             return Response(products);
         }
-
 
 
         //------Post----Put----Delete---------------------------------------------------------------------------------------------------------------------------

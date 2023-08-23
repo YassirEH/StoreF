@@ -11,11 +11,13 @@ namespace webApi.Controllers
     [ApiController]
     public class CategoryController : APIController
     {
+        private readonly IMapper _mapper;
         private readonly ICategoryRep _categoryRep;
 
         public CategoryController(ICategoryRep categoryRep, IMapper mapper, INotificationService notificationService)
-            : base(mapper, notificationService)
+            : base(notificationService)
         {
+            _mapper = mapper;
             _categoryRep = categoryRep;
         }
 
@@ -34,15 +36,23 @@ namespace webApi.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetCategory(int categoryId)
         {
-            if (!_categoryRep.CategoryExists(categoryId))
-                return NotFound();
+            if (!ModelState.IsValid)  return BadRequest(ModelState);
+
+            //if (!_categoryRep.CategoryExists(categoryId))  return NotFound();
 
             var category = _mapper.Map<CategoryDto>(_categoryRep.GetCategory(categoryId));
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             return Response(category);
+        }
+
+        [HttpGet("Filter By Name")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
+        public IActionResult FilterByName()
+        {
+            var categories = _categoryRep.FilterByName();
+            var categoryDto = _mapper.Map<List<CategoryDto>>(categories);
+
+            return !ModelState.IsValid ? BadRequest(ModelState) : Response(categoryDto);
         }
 
         [HttpPost]

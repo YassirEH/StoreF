@@ -5,36 +5,21 @@
         
         private static readonly List<Notification> Notifications = new();
 
+        public List<Notification> GetAllNotifications => Notifications;
+        
+
         public void Notify(string message, string type, ErrorType errorType)
         {
 
-            int statusCode;
-            switch (errorType)
+            var statusCode = errorType switch
             {
-                case ErrorType.Success:
-                    statusCode = 200;
-                    break;
-
-                case ErrorType.Error:
-                    statusCode = 500;
-                    break;
-
-                case ErrorType.Info:
-                    statusCode = 200;
-                    break;
-
-                case ErrorType.NotFound:
-                    statusCode = 404;
-                    break;
-
-                case ErrorType.Conflict:
-                    statusCode = 409;
-                    break;
-
-                default:
-                    statusCode = 500;
-                    break;
-            }
+                ErrorType.Success => 200,
+                ErrorType.Error => 500,
+                ErrorType.Info => 202,
+                ErrorType.NotFound => 404,
+                ErrorType.Conflict => 409,
+                ErrorType.ExternalServerError => 500
+            };
 
             Notifications.Add(new Notification(message, type,statusCode));
         }
@@ -53,7 +38,8 @@
         Error,
         Info,
         Conflict,
-        NotFound
+        NotFound,
+        ExternalServerError
     }
 }
 
