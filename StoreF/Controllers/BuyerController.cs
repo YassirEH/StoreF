@@ -21,7 +21,7 @@ namespace webApi.Controllers
             _buyerRep = buyerRep;
         }
 
-        [HttpGet]
+        [HttpGet("Get All Buyers")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<BuyerDto>))]
         public IActionResult GetBuyer()
         {
@@ -60,7 +60,7 @@ namespace webApi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("Create Buyer")]
         [ProducesResponseType(201, Type = typeof(BuyerDto))]
         [ProducesResponseType(400)]
         public IActionResult CreateBuyer([FromBody] BuyerDto buyerDto)
