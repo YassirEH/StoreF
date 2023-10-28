@@ -3,6 +3,7 @@ using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using System;
 using webApi;
 using webApi.Application.Services;
 
@@ -42,6 +43,11 @@ using (var scope = app.Services.CreateScope())
     var seeder = services.GetRequiredService<Seed>();
     seeder.SeedDataContext(dbContext);
 }
+// Allow web api permissions
+app.UseCors(policy => policy.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .SetIsOriginAllowed(origin => true)
+                            .AllowCredentials());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
