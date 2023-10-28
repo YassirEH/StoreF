@@ -102,10 +102,10 @@ namespace webApi.Controllers
 
         //------Post----Put----Delete---------------------------------------------------------------------------------------------------------------------------
 
-        [HttpPost]
+        [HttpPost("Create Product/{categoryId}")]
         [ProducesResponseType(201, Type = typeof(ProductDto))]
         [ProducesResponseType(400)]
-        public IActionResult CreateProduct([FromBody] ProductDto productDto, [FromQuery] int categoryId)
+        public IActionResult CreateProduct([FromBody] ProductDto productDto, int categoryId)
         {
             if (!ModelState.IsValid)
             {
