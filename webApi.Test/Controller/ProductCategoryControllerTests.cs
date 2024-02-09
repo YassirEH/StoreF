@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using Core.Dto;
-using Core.Interfaces;
-using Core.Models;
+﻿using Core.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using webApi.Application.Services;
 using webApi.Controllers;
-using Xunit;
 
 namespace webApi.Test.Controller
 {

@@ -4,7 +4,7 @@ using Core.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using webApi.Application.Services;
-using webApi.Controllers;
+using webApi.Controllers; 
 
 namespace webApi.Test.Controller
 {
@@ -92,7 +92,7 @@ namespace webApi.Test.Controller
             result.Should().BeOfType<OkObjectResult>();
         }
 
-        
+
 
         [Fact]
         public void ProductController_CreateProduct_InvalidModel_ReturnsBadRequest()

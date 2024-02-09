@@ -1,10 +1,8 @@
 ﻿using Core.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using webApi.Controllers;
 using webApi.Application.Services;
-using Xunit;
+using webApi.Controllers;
 
 namespace webApi.Test.Controller
 {
