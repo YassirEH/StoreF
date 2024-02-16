@@ -16,7 +16,7 @@ namespace webApi.Controllers
         private readonly IBuyerRep _buyerRep;
         private readonly ILogger _logger;
 
-        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep, INotificationService notificationService ILogger logger)
+        public ProductBuyerController(IProductBuyerRep productBuyerRep, IMapper mapper, IBuyerRep buyerRep, INotificationService notificationService, ILogger logger)
             : base(notificationService)
         {
             _mapper = mapper;
