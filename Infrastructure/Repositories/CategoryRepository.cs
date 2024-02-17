@@ -15,48 +15,110 @@ namespace Infrastructure.Repositories
 
         public bool Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            try
+            {
+                var saved = _context.SaveChanges();
+                return saved > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving changes: {ex.Message}");
+                return false;
+            }
         }
 
         public bool CategoryExists(int id)
         {
-            return _context.Categories.Any(c => c.Id == id);
+            try
+            {
+                return _context.Categories.Any(c => c.Id == id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking if category exists: {ex.Message}");
+                return false;
+            }
         }
 
         public Category GetCategory(int id)
         {
-            return _context.Categories.FirstOrDefault(e => e.Id == id);
+            try
+            {
+                return _context.Categories.FirstOrDefault(e => e.Id == id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting category: {ex.Message}");
+                return null;
+            }
         }
 
         public ICollection<Category> FilterByName()
         {
-            return _context.Categories.OrderBy(c => c.Name).ToList();
+            try
+            {
+                return _context.Categories.OrderBy(c => c.Name).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error filtering categories by name: {ex.Message}");
+                return null;
+            }
         }
 
         public ICollection<Category> GetCategories()
         {
-            return _context.Categories.ToList();
+            try
+            {
+                return _context.Categories.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting categories: {ex.Message}");
+                return null;
+            }
         }
 
         public bool CreateCategory(Category category)
         {
-            _context.Categories.Add(category);
-            return Save();
+            try
+            {
+                _context.Categories.Add(category);
+                return Save();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating category: {ex.Message}");
+                return false;
+            }
         }
 
         public bool UpdateCategory(Category category)
         {
-            _context.Update(category);
-            return Save();
+            try
+            {
+                _context.Update(category);
+                return Save();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating category: {ex.Message}");
+                return false;
+            }
         }
 
         public bool DeleteCategory(Category category)
         {
-            _context.Remove(category);
-            return Save();
+            try
+            {
+                _context.Remove(category);
+                return Save();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting category: {ex.Message}");
+                return false;
+            }
         }
-
-        
     }
 }
